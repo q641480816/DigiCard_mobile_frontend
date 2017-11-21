@@ -1,5 +1,6 @@
 package com.digicard;
 
+import com.digicard.nativeModule.Debug;
 import com.digicard.nativeModule.TryNfc;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -20,6 +21,7 @@ public class RNJavaReactPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new TryNfc(reactContext));
+        modules.add(new Debug(reactContext));
         return modules;
     }
 

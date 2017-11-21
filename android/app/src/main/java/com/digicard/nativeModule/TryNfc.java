@@ -21,7 +21,7 @@ public class TryNfc extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void invoke(String id, Promise promise) {
+    public void checkNFC(Promise promise) {
         NfcAdapter mNfcAdapter;
         mNfcAdapter = NfcAdapter.getDefaultAdapter(getReactApplicationContext());
         try {
@@ -35,9 +35,6 @@ public class TryNfc extends ReactContextBaseJavaModule {
                         promise.reject("2", "Android Beam Push Is Off");
                     }else{
                         promise.resolve("Pushing mother fucker!!!");
-                        Intent it = new Intent(getReactApplicationContext(), NFCExchange.class);
-                        it.putExtra("id",id);
-                        getReactApplicationContext().startActivity(it);
                     }
                 }
             }
@@ -48,8 +45,25 @@ public class TryNfc extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void invoke(String action ,String id){
+        Intent it = new Intent(getReactApplicationContext(), NFCExchange.class);
+        it.putExtra("id",id);
+        it.putExtra("action",action);
+
+        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.LOLLIPOP){
+            //SDK < 5
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        getReactApplicationContext().startActivity(it);
+    }
+
+    @ReactMethod
     public void goAndroidPushSetting() {
         Intent setNfc = new Intent(Settings.ACTION_NFCSHARING_SETTINGS);
-        getCurrentActivity().startActivity(setNfc);
+        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.LOLLIPOP){
+            //SDK < 5
+            setNfc.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        getReactApplicationContext().startActivity(setNfc);
     }
 }

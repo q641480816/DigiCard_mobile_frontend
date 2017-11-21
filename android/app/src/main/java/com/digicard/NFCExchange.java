@@ -46,7 +46,13 @@ public class NFCExchange extends AppCompatActivity implements NfcAdapter.CreateN
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
         String url = this.url + this.id;
-        NdefMessage message = MNdefMessage.getNdefMsg_from_RTD_URI(url,(byte)0x03,false);
+        NdefMessage message = null;
+        String action = getIntent().getStringExtra("action");
+        if(action.equals("browser")){
+            message = MNdefMessage.getNdefMsg_from_RTD_URI(url,(byte)0x03,false);
+        }else if(action.equals("application")){
+            message = MNdefMessage.getNdefMsg_from_RTD_TEXT(url, false, false);
+        }
         return message;
     }
 }

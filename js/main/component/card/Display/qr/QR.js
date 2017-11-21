@@ -5,7 +5,8 @@ import {
     Text,
     View,
     ViewPagerAndroid,
-    Alert
+    Alert,
+    NativeModules
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {responsiveFontSize} from "../../../responsive/responsive";
@@ -16,7 +17,6 @@ import Modal from 'react-native-modal';
 
 import Utils from '../../../../../common/util';
 import Data from '../../../../../common/Data';
-let {NativeModules}=require('react-native');
 let RNNFCPush = NativeModules.RNNFCPush;
 
 export default class QRPanel extends Component{
@@ -28,6 +28,9 @@ export default class QRPanel extends Component{
             cards: [],
             content: {
                 cardName: "Card: ",
+                beamTitle: 'Beam',
+                beam: 'Your Card is read to Beam!',
+                toDigi: 'Beam to Android',
                 alert:{
                     nfcOff:'Please turn on your NFC',
                     androidPushOff: 'Please turn on your Android Beam Push on Settings',
@@ -71,8 +74,11 @@ export default class QRPanel extends Component{
     }
 
     invokeNFC(id){
-        RNNFCPush.invoke(id).then((message)=>{
-            console.log(message);
+        RNNFCPush.checkNFC().then((message)=>{
+            Alert.alert(this.state.content.beamTitle, this.state.content.beam,
+                [
+                    {text: this.state.content.toDigi, onPress: () => RNNFCPush.invoke("browser",id)},
+                ], { cancelable: true });
         },(err)=>{
             switch (err.code){
                 case "0":

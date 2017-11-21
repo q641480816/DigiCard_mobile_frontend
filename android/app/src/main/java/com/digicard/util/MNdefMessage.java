@@ -1,9 +1,13 @@
 package com.digicard.util;
 
+import java.nio.charset.Charset;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.os.Parcelable;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -46,7 +50,7 @@ public class MNdefMessage {
         if (flagAddAAR) {
             // note: returns AAR for different app (nfcreadtag)
             return new NdefMessage(new NdefRecord[] {
-                    rtdUriRecord1, NdefRecord.createApplicationRecord("skyseraph.nfc_demo")
+                    rtdUriRecord1, NdefRecord.createApplicationRecord("com.digicard")
             }); // packageName
         } else {
             return new NdefMessage(new NdefRecord[] {
@@ -86,7 +90,7 @@ public class MNdefMessage {
         if (flagAddAAR) {
             // note: returns AAR for different app (nfcreadtag)
             return new NdefMessage(new NdefRecord[] {
-                    textRecord, NdefRecord.createApplicationRecord("skyseraph.nfc_demo")
+                    textRecord, NdefRecord.createApplicationRecord("com.digicard")
             });
         } else {
             return new NdefMessage(new NdefRecord[] {
@@ -114,7 +118,7 @@ public class MNdefMessage {
         if (flagAddAAR) {
             // note: returns AAR for different app (nfcreadtag)
             return new NdefMessage(new NdefRecord[] {
-                    uriRecord, NdefRecord.createApplicationRecord("skyseraph.nfc_demo")
+                    uriRecord, NdefRecord.createApplicationRecord("com.digicard")
             });
         } else {
             return new NdefMessage(new NdefRecord[] {
@@ -149,7 +153,7 @@ public class MNdefMessage {
         if (flagAddAAR) {
             // note: returns AAR for different app (nfcreadtag)
             return new NdefMessage(new NdefRecord[] {
-                    mimeRecord1, NdefRecord.createApplicationRecord("skyseraph.nfc_demo")
+                    mimeRecord1, NdefRecord.createApplicationRecord("com.digicard")
             });
         } else {
             return new NdefMessage(new NdefRecord[] {
@@ -182,13 +186,24 @@ public class MNdefMessage {
         if (flagAddAAR) {
             // note: returns AAR for different app (nfcreadtag)
             return new NdefMessage(new NdefRecord[] {
-                    exteralRecord1, NdefRecord.createApplicationRecord("skyseraph.nfc_demo")
+                    exteralRecord1, NdefRecord.createApplicationRecord("com.digicard")
             });
         } else {
             return new NdefMessage(new NdefRecord[] {
                     exteralRecord1
             });
         }
+    }
+
+    public static NdefMessage get_Custom_RTN_Text(String payLoad){
+        String mimeType = "application/com.digicard";
+        byte[] mimeBytes = mimeType.getBytes(Charset.forName("UTF-8"));
+        byte[] dataBytes = payLoad.getBytes(Charset.forName("UTF-8"));
+        byte[] id = new byte[0];
+
+        NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, mimeBytes, id, dataBytes);
+        NdefMessage message = new NdefMessage(new NdefRecord[] { record });
+        return message;
     }
 
     /**
@@ -211,6 +226,30 @@ public class MNdefMessage {
         } else {
             flagVersion = false;
         }
+    }
+
+    //Get nfc messages(byte)
+    public static NdefMessage[] getNDEFMessages(Intent intent) {
+        Parcelable[] rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+        if (rawMessages != null) {
+            NdefMessage[] messages = new NdefMessage[rawMessages.length];
+            for (int i = 0; i < messages.length; i++) {
+                messages[i] = (NdefMessage) rawMessages[i];
+            }
+            return messages;
+        } else {
+            return null;
+        }
+    }
+
+    //Get nfc message
+    public static String getByteArray(byte[] bytes) {
+        StringBuilder res= new StringBuilder();
+        StringBuilder builder = new StringBuilder().append("[");
+        for (byte aByte : bytes) {
+            res.append((char) aByte);
+        }
+        return res.toString();
     }
 
     /**
