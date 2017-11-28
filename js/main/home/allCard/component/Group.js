@@ -91,7 +91,7 @@ export default class Group extends Component{
                             })}>
                         <View>
                             <Text style={[styles.detail,{marginTop:4,fontSize: responsiveFontSize(2),fontWeight:'bold'}]}>{card.name===null?'Add Name':card.name}</Text>
-                            <Text style={{paddingLeft:15,fontSize:responsiveFontSize(1.75)}}>{card.cardName}</Text>
+                            <Text style={{paddingLeft:15,fontSize:responsiveFontSize(1.75)}}>{card.ownerName}</Text>
                             <Text style={{marginBottom:4,paddingLeft:15,fontSize:responsiveFontSize(1.75)}}>{card.phone}</Text>
                         </View>
                     </Ripple>

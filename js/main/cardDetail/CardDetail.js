@@ -107,6 +107,18 @@ export default class CardDetail extends Component{
     }
 
     updateGroup(ngIndex){
+        /*let url = Utils.baseURL + 'accountCards/'+this.state.groups[this.state.gIndex].cards[this.state.index].accountCardId;
+        fetch(`${url}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `${Utils.account.secret}`
+            },
+            body: JSON.stringify({
+
+            })
+        }).then((response) => response.text()).then((responseText) => {});*/
 
         let nGroups = this.state.groups;
         nGroups[ngIndex].cards.push(this.state.groups[this.state.gIndex].cards[this.state.index]);
