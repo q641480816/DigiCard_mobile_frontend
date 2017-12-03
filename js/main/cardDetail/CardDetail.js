@@ -107,13 +107,38 @@ export default class CardDetail extends Component{
     }
 
     updateGroup(ngIndex){
-
-        let nGroups = this.state.groups;
-        nGroups[ngIndex].cards.push(this.state.groups[this.state.gIndex].cards[this.state.index]);
-        nGroups[this.state.gIndex].cards.splice(this.state.index,1);
-        this.setState({gIndex:ngIndex,index:(nGroups[ngIndex].cards.length-1),groups: nGroups});
-        //update global
-        this.props.navigation.state.params.updateCardsMini(nGroups);
+        if(ngIndex !== this.state.gIndex) {
+            this.refs.toolbar.setLoadingShow(true);
+            let url = Utils.baseURL + 'accountCards/' + this.state.groups[this.state.gIndex].cards[this.state.index].accountCardId;
+            fetch(`${url}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `${Utils.account.secret}`
+                },
+                body: JSON.stringify({
+                    group: this.state.groups[ngIndex].group
+                })
+            }).then((response) => response.text()).then((responseText) => {
+                this.refs.toolbar.setLoadingShow(false);
+                let response = JSON.parse(responseText);
+                console.log(response);
+                if (response.status === 1) {
+                    let groups = this.state.groups;
+                    groups[ngIndex].cards.push(groups[this.state.gIndex].cards[this.state.index]);
+                    groups[this.state.gIndex].cards.splice(this.state.index, 1);
+                    this.setState({gIndex: ngIndex, index: (groups[ngIndex].cards.length - 1), groups: groups});
+                    this.props.navigation.state.params.updateCardsMini(groups, response.data.account.lastUpdate, () => {
+                    }, false);
+                } else {
+                    // TODO:
+                }
+            }).catch(e => {
+                this.refs.toolbar.setLoadingShow(false);
+                this.updateGroup(ngIndex);
+            });
+        }
     }
 
     updateCardName(){

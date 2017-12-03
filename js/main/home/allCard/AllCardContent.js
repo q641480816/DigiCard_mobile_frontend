@@ -9,7 +9,8 @@ import PropTypes from 'prop-types';
 import { responsiveFontSize } from '../../component/responsive/responsive';
 
 import Spinner from 'react-native-spinkit';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+
+import EvilIcons from "react-native-vector-icons/EvilIcons";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ripple from "react-native-material-ripple";
 import moment from 'moment';
@@ -17,6 +18,7 @@ import moment from 'moment';
 import Utils from '../../../common/util';
 import Group from './component/Group';
 import PStorage from '../../../common/persistantStorage';
+import Search from "../../component/search/Search";
 
 export default class AllCardContent extends Component{
     constructor(props) {
@@ -133,7 +135,7 @@ export default class AllCardContent extends Component{
 
     showCardModal(id){
         PStorage.load({
-            key: id,
+            key: id + Utils.account.accountId,
             autoSync: false,
         }).then(ret => {
             this.props.showCardModal(JSON.parse(ret.card));
@@ -165,11 +167,7 @@ export default class AllCardContent extends Component{
 
             return (
                 <ScrollView style={[styles.container]}>
-                    <View style={{width:Utils.size.width,height: 40,backgroundColor:'white',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                        <View style={{flex:1,marginLeft:15,marginRight:15,marginBottom: 5,marginTop: 5,backgroundColor:'#E0E0E0',borderRadius:2,height:32,alignItems:'center',justifyContent:'center'}}>
-                            <EvilIcons name={'search'} size={30}/>
-                        </View>
-                    </View>
+                    <Search placeholder={"Search"} cancel={'Cancel'}/>
                     <View>
                         <Group index={0} groups={this.state.groups} group={this.state.groups[0]} showCardModal={this.showCardModal} updateCardMini={this.updateCardMini} navigation={this.props.navigation}/>
                     </View>

@@ -27,11 +27,14 @@ export default class ManageGroup extends Component{
             groups: null,
             editProperty: null,
             newGroupName: '',
+            tempGroupName: '',
             content: {
                 title: 'Manage Group',
                 addGroup: 'Add Group',
                 newGroupLabel: 'New Group Name',
                 newGroupTitle: 'New Group',
+                editGroupLabel: 'Group Name',
+                editGroupTitle: 'Edit Group Name',
                 confirm: 'Confirm',
                 cancel: 'Cancel',
                 alert: {
@@ -45,6 +48,7 @@ export default class ManageGroup extends Component{
 
         this.groups = [];
         this.addNewGroup = this.addNewGroup.bind(this);
+        this.updateGroupName = this.updateGroupName.bind(this);
         this.deleteGroupAlert = this.deleteGroupAlert.bind(this);
         this.deleteGroup = this.deleteGroup.bind(this);
     }
@@ -85,6 +89,59 @@ export default class ManageGroup extends Component{
             console.log(err);
             this.addNewGroup();
         });
+    }
+
+    updateGroupName(){
+        let attr = this.state.editProperty.split(",");
+        if(this.state.tempGroupName !== this.state.groups[Number(attr[1])].group) {
+            this.refs.toolbar.setLoadingShow(true);
+            let url = Utils.baseURL + 'accountCards';
+            fetch(`${url}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `${Utils.account.secret}`
+                },
+                body: JSON.stringify({
+                    accountId: Utils.account.accountId,
+                    group: this.state.groups[Number(attr[1])].group,
+                    newGroup: this.state.tempGroupName
+                })
+            }).then((response) => response.text()).then((responseText) => {
+                this.refs.toolbar.setLoadingShow(false);
+                let response = JSON.parse(responseText);
+                if (response.status === 1) {
+                    let groups = this.state.groups;
+                    let gIndex = -1;
+                    for (let i = 1; i < this.state.groups.length; i++) {
+                        if (groups[i].group === this.state.tempGroupName) {
+                            gIndex = i;
+                            break;
+                        }
+                    }
+                    if (gIndex < 0) {
+                        // new
+                        groups[Number(attr[1])].group = this.state.tempGroupName;
+                    } else {
+                        groups[gIndex].cards = groups[gIndex].cards.concat(groups[Number(attr[1])].cards);
+                        groups.splice(Number(attr[1]), 1);
+                    }
+                    this.setState({groups: groups, tempGroupName: '', editProperty: null});
+                    this.props.navigation.state.params.updateCardMini(groups, response.data.lastUpdate, () => {
+                    }, false);
+                } else {
+                    //TODO:
+                }
+            }).catch(err => {
+                this.refs.toolbar.setLoadingShow(false);
+                console.log(err);
+                this.updateGroupName();
+            });
+        }else{
+            //no need to update
+            this.setState({tempGroupName: '', editProperty: null});
+        }
     }
 
     deleteGroupAlert(index){
@@ -139,12 +196,19 @@ export default class ManageGroup extends Component{
         for(let i = 1; i < this.state.groups.length; i++){
             this.groups.push(
                 <ElevatedView key={i} elevation={1} style={styles.row}>
-                    <Ripple onPress={()=>this.deleteGroupAlert(i)}>
+                    <Ripple onPress={()=>this.deleteGroupAlert(i)} style={{width: 60,height: 60, alignItems:'center',justifyContent:'center'}}>
                         <View style={{paddingLeft:15,paddingRight:15}}>
                             <Ionicons name={'ios-remove-circle-outline'} size={30} color={'grey'}/>
                         </View>
                     </Ripple>
-                    <Text style={styles.gName}>{this.state.groups[i].group}</Text>
+                    <Ripple style={{width: Utils.size.width-60,height: 60}} onPress={() => {
+                        this.setState({
+                            tempGroupName: this.state.groups[i].group,
+                            editProperty: "editGroup," + i
+                        })
+                    }}>
+                        <Text style={styles.gName}>{this.state.groups[i].group}</Text>
+                    </Ripple>
                 </ElevatedView>
             );
         }
@@ -199,6 +263,42 @@ export default class ManageGroup extends Component{
                         </View>
                     </ElevatedView>
                 </Modal>
+                <Modal  isVisible={this.state.editProperty !== null && this.state.editProperty.indexOf('editGroup') >= 0} animationInTiming={10} animationOutTiming={10}
+                        onBackButtonPress={() => console.log('')}
+                        onBackdropPress={() => console.log("")}
+                        style={{alignItems:'center'}}>
+                    <ElevatedView elevation={2}>
+                        <View style={
+                            {width: Utils.size.width*0.85,backgroundColor:'white',paddingLeft:15,paddingRight:15,paddingTop:10,alignItems:'center'}
+                        }>
+                            <Text style={{fontSize:responsiveFontSize(2.65),fontWeight:'bold',marginBottom:10}}>{this.state.content.editGroupTitle}</Text>
+                            <View style={{width:Utils.size.width*0.85-30}}>
+                                <Sae
+                                    label={this.state.content.editGroupLabel}
+                                    iconClass={FontAwesomeIcon}
+                                    iconName={'pencil'}
+                                    iconColor={Utils.colors.primaryColor}
+                                    labelStyle={[styles.input,{color: Utils.colors.primaryColor}]}
+                                    inputStyle={[styles.input,{color: Utils.colors.primaryColor}]}
+                                    value={this.state.tempGroupName}
+                                    onChangeText={(value) => this.setState({tempGroupName: value})}
+                                />
+                            </View>
+                            <View style={{width:Utils.size.width*0.85-30,borderTopWidth:0.5,borderTopColor:'grey',marginTop:10,flexDirection:'row'}}>
+                                <TouchableWithoutFeedback onPress={()=>this.updateGroupName()}>
+                                    <View style={{width:(Utils.size.width*0.85-30)/2,alignItems: 'center',justifyContent:'center'}}>
+                                        <Text style={styles.actionText}>{this.state.content.confirm}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={()=>this.setState({editProperty:null,tempGroupName: ''})}>
+                                    <View style={{width:(Utils.size.width*0.85-30)/2,alignItems: 'center',justifyContent:'center'}}>
+                                        <Text style={styles.actionText}>{this.state.content.cancel}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </View>
+                        </View>
+                    </ElevatedView>
+                </Modal>
             </View>
         );
     }
@@ -211,6 +311,7 @@ const styles = StyleSheet.create({
     },
     row:{
         width: Utils.size.width,
+        height: 60,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',

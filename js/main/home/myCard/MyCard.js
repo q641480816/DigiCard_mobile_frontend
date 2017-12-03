@@ -42,7 +42,7 @@ export default class MyCard extends Component{
             <View style={[styles.container]}>
                 <Toolbar ref={'toolbar'} title={this.state.content.title} rightElement={'user'} loading={true} rightText={null}/>
                 <View style={styles.content}>
-                    <MyCardContent ref={'content'} navigation={this.props.navigation} updateView={this.props.updateView} setHttp={this.setHttp}/>
+                    <MyCardContent ref={'content'} navigation={this.props.navigation} updateView={this.props.updateView} setHttp={this.setHttp} createNewCard={this.props.createNewCard}/>
                 </View>
             </View>
         );
@@ -65,4 +65,5 @@ const styles = StyleSheet.create({
 
 MyCard.propTypes = {
     navigation: PropTypes.object,
+    createNewCard: PropTypes.func.isRequired
 };
