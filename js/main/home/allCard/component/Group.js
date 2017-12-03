@@ -31,7 +31,6 @@ export default class Group extends Component{
         this.cards = [];
         this.dial = this.dial.bind(this);
         this.updateCardsMini = this.updateCardsMini.bind(this);
-        this.deleteCard = this.deleteCard.bind(this);
     }
 
     componentWillMount(){
@@ -52,15 +51,6 @@ export default class Group extends Component{
 
     updateCardsMini(allCardsMini, lastUpdate, callback, isSync){
         this.props.updateCardMini(allCardsMini,lastUpdate,callback,isSync);
-    }
-
-    deleteCard(index){
-        let groups = this.state.groups;
-        let card = groups[this.state.index].cards[index];
-        groups[this.state.index].cards.splice(index,1);
-        this.props.updateCardMiniWithLocal(groups,()=>{
-            PStorage.remove({key: card.id});
-        });
     }
 
     dial(number){
@@ -85,7 +75,6 @@ export default class Group extends Component{
                                 index:i,
                                 gIndex: this.state.index,
                                 id:card.cardId+"",
-                                deleteCard: this.deleteCard,
                                 updateCardsMini:this.updateCardsMini,
                                 groups: this.state.groups
                             })}>

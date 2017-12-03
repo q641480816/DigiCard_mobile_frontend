@@ -6,14 +6,14 @@ import {
     Text,
     TouchableWithoutFeedback,
     Easing,
-    TextInput
+    TextInput,
+    Image
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { responsiveFontSize } from '../../component/responsive/responsive';
 
-import EvilIcons from "react-native-vector-icons/EvilIcons";
-
 import Utils from "../../../common/util";
+import Data from "../../../common/Data";
 
 export default class Search extends Component{
 
@@ -26,8 +26,10 @@ export default class Search extends Component{
             placeholder: '',
             cancel: '',
             config: {
+                iconMatrix: 24,
                 barWidth: new Animated.Value(Utils.size.width),
-                boxRightMargin: new Animated.Value(5)
+                cancelSize: 70,
+                inputMargin: new Animated.Value(Utils.size.width/2-24/2-5)
             },
             content: {
 
@@ -37,6 +39,7 @@ export default class Search extends Component{
         this.onFocus = this.onFocus.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onTextChange = this.onTextChange.bind(this);
+        this.onDelete = this.onDelete.bind(this);
     }
 
     componentWillMount(){
@@ -48,23 +51,25 @@ export default class Search extends Component{
 
     onFocus(){
         if(!this.state.isSearch) {
+            this.props.onFocus();
             this.setState({isSearch: true});
             Animated.parallel([
                 Animated.timing(this.state.config.barWidth, {
-                    toValue: Utils.size.width-70,
+                    toValue: Utils.size.width-this.state.config.cancelSize,
                     duration: 300,
                     easing: Easing.spring
                 }),
-                Animated.timing(this.state.config.boxRightMargin, {
-                    toValue: 0,
+                Animated.timing(this.state.config.inputMargin, {
+                    toValue: 5,
                     duration: 300,
                     easing: Easing.spring
                 })
-            ]).start(() => console.log(""));
+            ]).start(() => this.refs.search.focus());
         }
     }
 
     onCancel(){
+        this.props.onCancel();
         this.setState({isSearch: false,searchKey: ''});
         Animated.parallel([
             Animated.timing(this.state.config.barWidth, {
@@ -72,8 +77,8 @@ export default class Search extends Component{
                 duration: 300,
                 easing: Easing.spring
             }),
-            Animated.timing(this.state.config.boxRightMargin, {
-                toValue: 5,
+            Animated.timing(this.state.config.inputMargin, {
+                toValue: Utils.size.width/2-24/2-5,
                 duration: 300,
                 easing: Easing.spring
             })
@@ -81,7 +86,13 @@ export default class Search extends Component{
     }
 
     onTextChange(text){
+        this.props.onTextChange(text);
+        this.setState({searchKey: text});
+    }
 
+    onDelete(){
+        this.props.onTextChange('');
+        this.setState({searchKey: ''});
     }
 
     render(){
@@ -89,14 +100,35 @@ export default class Search extends Component{
             <View style={styles.container}>
                 <TouchableWithoutFeedback onPress={()=>{this.onFocus()}}>
                     <Animated.View style={[styles.searchBox,{width: this.state.config.barWidth}]}>
-                        <Animated.View style={[styles.searchBody,{alignItems: this.state.isSearch? 'flex-start':'center',marginRight: this.state.config.boxRightMargin}]}>
-                            <View style={{flexDirection:"row",alignItems:"center", justifyContent:"center"}}>
-                                <EvilIcons name={'search'} size={30}/>
-                                <TextInput style={{marginLeft: 1, fontSize: responsiveFontSize(2), display: !this.state.isSearch? "none":'flex', width: Utils.size.width-100}}
+                        <Animated.View style={[styles.searchBody]}>
+                            <View style={{flexDirection:"row",alignItems:"center",height:32}}>
+                                <Animated.Image
+                                    style={{width: this.state.config.iconMatrix, height: this.state.config.iconMatrix,marginLeft:this.state.config.inputMargin}}
+                                    source={{uri: Data.searchIcon}}
+                                />
+                                <TextInput ref={'search'} style={{
+                                    marginLeft: 5,
+                                    display: !this.state.isSearch? "none":'flex',
+                                    width: Utils.size.width,
+                                    padding:0,
+                                    margin:0
+                                }}
                                            placeholder={this.state.placeholder}
                                            underlineColorAndroid={'transparent'}
+                                           value={this.state.searchKey}
                                            onChangeText={(text) => this.onTextChange(text)}
                                 />
+                                <TouchableWithoutFeedback onPress={()=>this.setState({searchKey: ''})}>
+                                    <Image style={{
+                                        position:'absolute',
+                                        width: this.state.config.iconMatrix-4,
+                                        height: this.state.config.iconMatrix-4,
+                                        display: !this.state.isSearch? "none":'flex',
+                                        right:5
+                                    }}
+                                           source={{uri: Data.deleteIcon}}
+                                    />
+                                </TouchableWithoutFeedback>
                             </View>
                         </Animated.View>
                     </Animated.View>
@@ -127,15 +159,19 @@ const styles = StyleSheet.create({
         flex: 1,
         marginLeft:5,
         marginBottom: 3.5,
+        marginRight: 5,
         marginTop: 3.5,
         backgroundColor:'#E0E0E0',
         borderRadius:2,
-        height:35,
+        height:32,
         justifyContent:'center',
     }
 });
 
 Search.propTypes = {
     placeholder: PropTypes.string.isRequired,
-    cancel: PropTypes.string.isRequired
+    cancel: PropTypes.string.isRequired,
+    onFocus: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    onTextChange: PropTypes.func.isRequired
 };

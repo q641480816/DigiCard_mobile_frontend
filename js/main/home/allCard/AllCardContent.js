@@ -9,8 +9,6 @@ import PropTypes from 'prop-types';
 import { responsiveFontSize } from '../../component/responsive/responsive';
 
 import Spinner from 'react-native-spinkit';
-
-import EvilIcons from "react-native-vector-icons/EvilIcons";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ripple from "react-native-material-ripple";
 import moment from 'moment';
@@ -19,6 +17,7 @@ import Utils from '../../../common/util';
 import Group from './component/Group';
 import PStorage from '../../../common/persistantStorage';
 import Search from "../../component/search/Search";
+import AllCardSearch from "./component/AllCardSearch";
 
 export default class AllCardContent extends Component{
     constructor(props) {
@@ -26,6 +25,8 @@ export default class AllCardContent extends Component{
 
         this.state = {
             groups: null,
+            isSearch: false,
+            searchKey: '',
             content: {
                 loading: 'Loading All Cards',
                 manage: 'Manage Group'
@@ -37,6 +38,7 @@ export default class AllCardContent extends Component{
         this.getAllCardsLocal = this.getAllCardsLocal.bind(this);
         this.getAllGroups = this.getAllGroups.bind(this);
         this.showCardModal = this.showCardModal.bind(this);
+        this.navigateCardDetail = this.navigateCardDetail.bind(this);
         this.init_card = this.init_card.bind(this);
         this.updateCardMini = this.updateCardMini.bind(this);
         this.updateCardMiniWithLocal = this.updateCardMiniWithLocal.bind(this);
@@ -144,8 +146,22 @@ export default class AllCardContent extends Component{
         });
     }
 
+    navigateCardDetail(id, index, gIndex){
+        this.props.navigation.navigate('CardDetail',{
+            index:index,
+            gIndex: gIndex,
+            id:id+"",
+            updateCardsMini:this.updateCardMini,
+            groups: this.state.groups
+        })
+    }
+
     getAllGroups(){
         return this.state.groups;
+    }
+
+    onSearchKeyChange(key){
+        this.setState({searchKey: key});
     }
 
     render() {
@@ -167,21 +183,32 @@ export default class AllCardContent extends Component{
 
             return (
                 <ScrollView style={[styles.container]}>
-                    <Search placeholder={"Search"} cancel={'Cancel'}/>
-                    <View>
-                        <Group index={0} groups={this.state.groups} group={this.state.groups[0]} showCardModal={this.showCardModal} updateCardMini={this.updateCardMini} navigation={this.props.navigation}/>
+                    <Search placeholder={"Search"} cancel={'Cancel'}
+                            onFocus={()=>{this.setState({isSearch: true})}}
+                            onCancel={()=>{this.setState({isSearch: false, searchKey:''})}}
+                            onTextChange={(text)=>this.onSearchKeyChange(text)}
+                    />
+                    <View style={{display: this.state.isSearch? 'none':'flex'}}>
+                        <View>
+                            <Group index={0} groups={this.state.groups} group={this.state.groups[0]} showCardModal={this.showCardModal} updateCardMini={this.updateCardMini} navigation={this.props.navigation}/>
+                        </View>
+                        <View style={{width: Utils.size.width, height: 25, backgroundColor: '#FAFAFA'}}/>
+                        <View>
+                            {this.groups}
+                        </View>
+                        <Ripple style={styles.bar} onPress={()=>this.props.navigation.navigate('ManageGroup',{
+                            groups: this.state.groups,
+                            updateCardMini: this.updateCardMini
+                        })}>
+                            <FontAwesome name={'object-group'} color={'grey'} size={22.5} style={[styles.icon]}/>
+                            <Text style={{fontSize:responsiveFontSize(2.1)}}>{this.state.content.manage}</Text>
+                        </Ripple>
                     </View>
-                    <View style={{width: Utils.size.width, height: 25, backgroundColor: '#FAFAFA'}}/>
-                    <View>
-                        {this.groups}
+                    <View style={{display: !this.state.isSearch? 'none':'flex'}}>
+                        <AllCardSearch groups={this.state.groups} searchKey={this.state.searchKey} showCardModal={this.showCardModal}
+                                       navigateCardDetail={this.navigateCardDetail}
+                        />
                     </View>
-                    <Ripple style={styles.bar} onPress={()=>this.props.navigation.navigate('ManageGroup',{
-                        groups: this.state.groups,
-                        updateCardMini: this.updateCardMini
-                    })}>
-                        <FontAwesome name={'object-group'} color={'grey'} size={22.5} style={[styles.icon]}/>
-                        <Text style={{fontSize:responsiveFontSize(2.1)}}>{this.state.content.manage}</Text>
-                    </Ripple>
                 </ScrollView>
             );
         }
