@@ -276,7 +276,7 @@ export default class MyCardContent extends Component{
                             width: Utils.size.width,
                             alignItems: 'center'
                         }]}>
-                            <Ripple onPress={() => console.log("test")}>
+                            <Ripple onPress={() => this.props.createNewCard()}>
                                 <View style={[{
                                     height: cardHeight,
                                     width: Utils.size.width,
@@ -341,5 +341,6 @@ const styles = StyleSheet.create({
 MyCardContent.propTypes = {
     navigation: PropTypes.object.isRequired,
     updateView: PropTypes.func.isRequired,
-    setHttp: PropTypes.func.isRequired
+    setHttp: PropTypes.func.isRequired,
+    createNewCard: PropTypes.func.isRequired
 };

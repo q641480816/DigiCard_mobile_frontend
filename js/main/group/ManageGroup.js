@@ -92,37 +92,56 @@ export default class ManageGroup extends Component{
     }
 
     updateGroupName(){
-        this.refs.toolbar.setLoadingShow(true);
         let attr = this.state.editProperty.split(",");
-        let url = Utils.baseURL + 'accountCards';
-        fetch(`${url}`, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `${Utils.account.secret}`
-            },
-            body: JSON.stringify({
-                accountId: Utils.account.accountId,
-                group: this.state.groups[Number(attr[1])].group,
-                newGroup: this.state.tempGroupName
-            })
-        }).then((response) => response.text()).then((responseText) => {
-            this.refs.toolbar.setLoadingShow(false);
-            let response = JSON.parse(responseText);
-            if(response.status === 1){
-                let groups = this.state.groups;
-                groups[Number(attr[1])].group = this.state.tempGroupName;
-                this.setState({groups:groups,tempGroupName:'',editProperty:null});
-                this.props.navigation.state.params.updateCardMini(groups,response.data.lastUpdate,()=>{},false);
-            }else {
-                //TODO:
-            }
-        }).catch(err=>{
-            this.refs.toolbar.setLoadingShow(false);
-            console.log(err);
-            this.updateGroupName();
-        });
+        if(this.state.tempGroupName !== this.state.groups[Number(attr[1])].group) {
+            this.refs.toolbar.setLoadingShow(true);
+            let url = Utils.baseURL + 'accountCards';
+            fetch(`${url}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `${Utils.account.secret}`
+                },
+                body: JSON.stringify({
+                    accountId: Utils.account.accountId,
+                    group: this.state.groups[Number(attr[1])].group,
+                    newGroup: this.state.tempGroupName
+                })
+            }).then((response) => response.text()).then((responseText) => {
+                this.refs.toolbar.setLoadingShow(false);
+                let response = JSON.parse(responseText);
+                if (response.status === 1) {
+                    let groups = this.state.groups;
+                    let gIndex = -1;
+                    for (let i = 1; i < this.state.groups.length; i++) {
+                        if (groups[i].group === this.state.tempGroupName) {
+                            gIndex = i;
+                            break;
+                        }
+                    }
+                    if (gIndex < 0) {
+                        // new
+                        groups[Number(attr[1])].group = this.state.tempGroupName;
+                    } else {
+                        groups[gIndex].cards = groups[gIndex].cards.concat(groups[Number(attr[1])].cards);
+                        groups.splice(Number(attr[1]), 1);
+                    }
+                    this.setState({groups: groups, tempGroupName: '', editProperty: null});
+                    this.props.navigation.state.params.updateCardMini(groups, response.data.lastUpdate, () => {
+                    }, false);
+                } else {
+                    //TODO:
+                }
+            }).catch(err => {
+                this.refs.toolbar.setLoadingShow(false);
+                console.log(err);
+                this.updateGroupName();
+            });
+        }else{
+            //no need to update
+            this.setState({tempGroupName: '', editProperty: null});
+        }
     }
 
     deleteGroupAlert(index){

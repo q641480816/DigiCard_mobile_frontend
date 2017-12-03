@@ -186,7 +186,7 @@ export default class Home extends Component{
         return(
             <View style={styles.container} onLayout={(event)=>this.measureHeight(event)}>
                 <View style={[{display: this.state.page===1?"flex":'none',height:this.state.bodyHeight}]}>
-                    <MyCard ref={'myCards'} navigation={this.props.navigation} updateView={this.updateView}/>
+                    <MyCard ref={'myCards'} navigation={this.props.navigation} updateView={this.updateView} createNewCard={this.createNewCard}/>
                 </View>
                 <View style={{display: this.state.page===2?"flex":'none',height:this.state.bodyHeight}}>
                     <AllCard ref={'allCards'} navigation={this.props.navigation}/>

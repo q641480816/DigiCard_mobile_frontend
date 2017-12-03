@@ -133,7 +133,7 @@ export default class AllCardContent extends Component{
 
     showCardModal(id){
         PStorage.load({
-            key: id,
+            key: id + Utils.account.accountId,
             autoSync: false,
         }).then(ret => {
             this.props.showCardModal(JSON.parse(ret.card));

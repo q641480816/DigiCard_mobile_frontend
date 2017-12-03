@@ -52,11 +52,11 @@ export default class Grouping extends Component{
 
     render(){
         this.groups = [];
-        for(let i = 2; i < this.state.groups.length; i++){
+        for(let i = 1; i < this.state.groups.length; i++){
             this.groups.push(
                 <Ripple key={i} onPress={()=>this.onGroupSelected(i)}>
                     <ElevatedView elevation={1} style={styles.row}>
-                        <Text style={styles.gName}>{this.state.groups[i].groupName}</Text>
+                        <Text style={styles.gName}>{this.state.groups[i].group}</Text>
                         <View style={{display: i===this.state.gIndex?'flex':'none',paddingRight:15}}>
                             <EvilIcons name={'check'} size={30} color={'green'}/>
                         </View>

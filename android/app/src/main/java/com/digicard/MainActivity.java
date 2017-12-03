@@ -64,7 +64,7 @@ public class MainActivity extends ReactActivity {
     public void onNewIntent(Intent intent) {
         setIntent(intent);
 
-        if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())){
+        if(nfcAdapter != null && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())){
             //NFC received
             WritableMap params = Arguments.createMap();
             //read message
@@ -86,12 +86,16 @@ public class MainActivity extends ReactActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        nfcAdapter.enableForegroundDispatch(this, mNfcPendingIntent, null, null);
+        if (nfcAdapter != null) {
+            nfcAdapter.enableForegroundDispatch(this, mNfcPendingIntent, null, null);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        nfcAdapter.disableForegroundDispatch(this);
+        if (nfcAdapter != null) {
+            nfcAdapter.disableForegroundDispatch(this);
+        }
     }
 }
