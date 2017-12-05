@@ -39,7 +39,6 @@ export default class Search extends Component{
         this.onFocus = this.onFocus.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onTextChange = this.onTextChange.bind(this);
-        this.onDelete = this.onDelete.bind(this);
     }
 
     componentWillMount(){
@@ -90,11 +89,6 @@ export default class Search extends Component{
         this.setState({searchKey: text});
     }
 
-    onDelete(){
-        this.props.onTextChange('');
-        this.setState({searchKey: ''});
-    }
-
     render(){
         return (
             <View style={styles.container}>
@@ -118,17 +112,6 @@ export default class Search extends Component{
                                            value={this.state.searchKey}
                                            onChangeText={(text) => this.onTextChange(text)}
                                 />
-                                <TouchableWithoutFeedback onPress={()=>this.setState({searchKey: ''})}>
-                                    <Image style={{
-                                        position:'absolute',
-                                        width: this.state.config.iconMatrix-4,
-                                        height: this.state.config.iconMatrix-4,
-                                        display: !this.state.isSearch? "none":'flex',
-                                        right:5
-                                    }}
-                                           source={{uri: Data.deleteIcon}}
-                                    />
-                                </TouchableWithoutFeedback>
                             </View>
                         </Animated.View>
                     </Animated.View>

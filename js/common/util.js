@@ -79,6 +79,7 @@ const Utils = {
             };
         },
         validatePhone: (number)=> {
+            number = number.trim();
             let first = 0;
             let last = 0;
             for(let i = 0;i < number.length; i++){
@@ -97,7 +98,24 @@ const Utils = {
                     }
                 }
             }
-            return number.substring(first,last+1);
+            return number.substring(first,last+1).trim();
+        },
+        validateEmail: (email)=>{
+            email = email.trim();
+            //check :
+            if(email.indexOf(":" >= 0)){
+                email = email.substring(email.indexOf(":")+1).trim();
+            }
+            // check space
+            while(email.indexOf(" ") > 0){
+                if(email.substring(0,email.indexOf(" ")).indexOf("@") >= 0){
+                    email = email.substring(0,email.indexOf(" "));
+                }else{
+                    email = email.substring(email.indexOf(" ")+1);
+                }
+                email = email.trim();
+            }
+            return email;
         },
         sortAllCards: (cards)=>{
             let allCards = [];

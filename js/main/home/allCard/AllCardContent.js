@@ -160,10 +160,6 @@ export default class AllCardContent extends Component{
         return this.state.groups;
     }
 
-    onSearchKeyChange(key){
-        this.setState({searchKey: key});
-    }
-
     render() {
         if (this.state.groups === null) {
             return (
@@ -186,7 +182,7 @@ export default class AllCardContent extends Component{
                     <Search placeholder={"Search"} cancel={'Cancel'}
                             onFocus={()=>{this.setState({isSearch: true})}}
                             onCancel={()=>{this.setState({isSearch: false, searchKey:''})}}
-                            onTextChange={(text)=>this.onSearchKeyChange(text)}
+                            onTextChange={(text)=>this.setState({searchKey: text})}
                     />
                     <View style={{display: this.state.isSearch? 'none':'flex'}}>
                         <View>
@@ -205,7 +201,7 @@ export default class AllCardContent extends Component{
                         </Ripple>
                     </View>
                     <View style={{display: !this.state.isSearch? 'none':'flex'}}>
-                        <AllCardSearch groups={this.state.groups} searchKey={this.state.searchKey} showCardModal={this.showCardModal}
+                        <AllCardSearch ref={'search'} groups={this.state.groups} searchKey={this.state.searchKey} showCardModal={this.showCardModal}
                                        navigateCardDetail={this.navigateCardDetail}
                         />
                     </View>

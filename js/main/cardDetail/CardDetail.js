@@ -57,6 +57,7 @@ export default class CardDetail extends Component{
         this.updateGroup = this.updateGroup.bind(this);
         this.updateCardName = this.updateCardName.bind(this);
         this.dial = this.dial.bind(this);
+        this.sendEmail = this.sendEmail.bind(this);
         this.deleteCard = this.deleteCard.bind(this);
         this.showMenu = this.showMenu.bind(this);
     }
@@ -208,9 +209,20 @@ export default class CardDetail extends Component{
             if (!canOpen) {
                 return Promise.reject(new Error(`The URL is invalid: ${url}`));
             } else {
-                return Linking.openURL(url).catch((err) => console.log(err.toString()))
+                return Linking.openURL(url).catch((err) => console.log(err.toString()));
             }
-        })
+        });
+    }
+
+    sendEmail(email){
+        let url = `${'mailto:'+Utils.cFunctions.validateEmail(email)}`;
+        Linking.canOpenURL(url).then(canOpen => {
+            if (!canOpen) {
+                return Promise.reject(new Error(`The URL is invalid: ${url}`));
+            } else {
+                return Linking.openURL(url).catch((err) => console.log(err.toString()));
+            }
+        });
     }
 
     showMenu(){
@@ -267,10 +279,12 @@ export default class CardDetail extends Component{
                                         <Text style={styles.textContent}>{this.state.cardValue.contentSet[1].value}</Text>
                                     </View>
                                 </Ripple>
-                                <View style={[styles.row,{marginBottom:0}]}>
-                                    <MaterialCommunityIcons name={'email'} size={25} color={'grey'}/>
-                                    <Text style={styles.textContent}>{this.state.cardValue.contentSet[2].value}</Text>
-                                </View>
+                                <Ripple onPress={()=>this.sendEmail(this.state.cardValue.contentSet[2].value)}>
+                                    <View style={[styles.row,{marginBottom:0}]}>
+                                        <MaterialCommunityIcons name={'email'} size={25} color={'grey'}/>
+                                        <Text style={styles.textContent}>{this.state.cardValue.contentSet[2].value}</Text>
+                                    </View>
+                                </Ripple>
                             </ElevatedView>
                             <View style={styles.hr}/>
                         </View>

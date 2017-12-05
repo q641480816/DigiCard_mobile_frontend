@@ -58,10 +58,11 @@ export default class AllCardSearch extends Component{
 
     getMatchedCard(groups,key){
         let mGroups = [];
+        key = key.toLowerCase();
         for(let i = 0; i < groups.length; i++){
             for(let j = 0; j < groups[i].cards.length; j++){
                 let c = groups[i].cards[j];
-                if(c.name.indexOf(key) >=0 || c.ownerName.indexOf(key) >=0 || c.phone.indexOf(key) >= 0 || c.email.indexOf(key) >= 0){
+                if((c.name !== null && c.name.toLowerCase().indexOf(key) >=0) || c.ownerName.toLowerCase().indexOf(key) >=0 || c.phone.toLowerCase().indexOf(key) >= 0 || c.email.toLowerCase().indexOf(key) >= 0){
                     mGroups.push({
                         card: c,
                         index: j,
