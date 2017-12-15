@@ -43,6 +43,7 @@ export default class Home extends Component{
         this.createNewCard = this.createNewCard.bind(this);
         this.updateCardMini = this.updateCardMini.bind(this);
         this.scanQr = this.scanQr.bind(this);
+        this.STG = this.STG.bind(this);
         this.getAllGroups = this.getAllGroups.bind(this);
     }
 
@@ -181,6 +182,23 @@ export default class Home extends Component{
         }
     }
 
+    STG(){
+        this.setState({isAction:false});
+        if(Utils.OS === 'android'){
+            PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result)=>{
+                if(result){
+                    this.props.navigation.navigate('NearbyCards');
+                }else{
+                    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result)=> {
+                        if(result === 'granted'){
+                            this.props.navigation.navigate('NearbyCards');
+                        }
+                    })
+                }
+            });
+        }
+    }
+
     render(){
         console.log("Home rendered!");
         return(
@@ -213,7 +231,7 @@ export default class Home extends Component{
                 <Modal isVisible={this.state.isAction} animationInTiming={350} animationOutTiming={350} style={styles.actionSheet}
                         onBackButtonPress={() => this.setState({isAction: false})}
                         onBackdropPress={() => this.setState({isAction: false})}>
-                        <BottomAction createNewCard={this.createNewCard} scanQr={this.scanQr}/>
+                        <BottomAction createNewCard={this.createNewCard} scanQr={this.scanQr} STG={this.STG}/>
                 </Modal>
             </View>
         );

@@ -10,6 +10,7 @@ import { responsiveFontSize,responsiveHeight,responsiveWidth } from '../../compo
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Ripple from 'react-native-material-ripple';
 
 import Util from '../../../common/util';
@@ -22,7 +23,8 @@ export default class BottomAction extends Component{
         this.state = {
             content:{
                 create: 'Create My Card',
-                scanQr: 'Scan QR Code'
+                scanQr: 'Scan QR Code',
+                nearby: 'Nearby'
             }
         };
     }
@@ -40,6 +42,12 @@ export default class BottomAction extends Component{
                     <View style={[styles.option,{borderBottomColor:'grey',borderBottomWidth:0.25}]}>
                         <MaterialCommunityIcons name="qrcode-scan" size={responsiveWidth(8)} color={Util.colors.secondaryColor}/>
                         <Text style={styles.textCommon}>{this.state.content.scanQr}</Text>
+                    </View>
+                </Ripple>
+                <Ripple onPress={() => this.props.STG()}>
+                    <View style={[styles.option,{borderBottomColor:'grey',borderBottomWidth:0.25}]}>
+                        <Entypo name="location-pin" size={responsiveWidth(8)} color={Util.colors.secondaryColor}/>
+                        <Text style={styles.textCommon}>{this.state.content.nearby}</Text>
                     </View>
                 </Ripple>
             </ElevatedView>
@@ -67,5 +75,6 @@ const styles = StyleSheet.create({
 
 BottomAction.propTypes = {
     createNewCard: PropTypes.func,
-    scanQr: PropTypes.func
+    scanQr: PropTypes.func,
+    STG: PropTypes.func
 };

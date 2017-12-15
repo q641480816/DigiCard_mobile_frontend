@@ -18,6 +18,7 @@ import Home from './js/main/home/Home';
 import EditCard from './js/main/editCard/EditCard';
 import CardDetail from './js/main/cardDetail/CardDetail';
 import ReadQr from './js/main/readQR/ReadQr';
+import NearbyCard from './js/main/nearbyCards/NearbyCards';
 import Grouping from "./js/main/group/Grouping";
 import ManageGroup from "./js/main/group/ManageGroup";
 
@@ -176,6 +177,12 @@ const DigiCard = StackNavigator({
     },
     CardDetail: {
         screen: CardDetail,
+        navigationOptions: ({navigation}) => ({
+            header: null
+        }),
+    },
+    NearbyCards: {
+        screen: NearbyCard,
         navigationOptions: ({navigation}) => ({
             header: null
         }),

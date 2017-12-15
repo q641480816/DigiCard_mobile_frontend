@@ -35,6 +35,9 @@ export default class QRPanel extends Component{
                     nfcOff:'Please turn on your NFC',
                     androidPushOff: 'Please turn on your Android Beam Push on Settings',
                     setting: 'Go Settings',
+                    locationOff: 'GPS is Off',
+                    locationOffBody: 'Please turn on the GPS service',
+                    cardPublic: 'Your name card is public',
                     error0: 'NFC Not Supported',
                     error1: 'NFC Is off',
                     error2: 'Android Beam Push Is Off',
@@ -46,6 +49,7 @@ export default class QRPanel extends Component{
 
         this.setIndex = this.setIndex.bind(this);
         this.invokeNFC = this.invokeNFC.bind(this);
+        this.invokeSTG = this.invokeSTG.bind(this);
     }
 
     componentWillMount(){
@@ -101,6 +105,42 @@ export default class QRPanel extends Component{
         });
     }
 
+    invokeSTG(){
+        navigator.geolocation.getCurrentPosition((initialPosition) =>
+            {
+                let url = Utils.baseURL + 'stGround/';
+                fetch(`${url}`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': `${Utils.account.secret}`
+                    },
+                    body: JSON.stringify({
+                        latitude: initialPosition.coords.latitude+"",
+                        longitude: initialPosition.coords.longitude+"",
+                        id: this.state.cards[this.state.index].cardId+""
+                    })
+                }).then((response) => response.text()).then((responseText) => {
+                    let response = JSON.parse(responseText);
+                    if(response.status === 1){
+                        Alert.alert(this.state.content.alert.cardPublic, "", [{text: 'OK', onPress: () => console.log('OK Pressed')},], { cancelable: true });
+                    }else{
+                        //TODO: Catch
+                    }
+                    //console.log(response)
+                }).catch(err=>{
+                    console.log(err);
+                });
+            }, (error) =>
+            {
+                Alert.alert(this.state.content.alert.locationOff, this.state.content.alert.locationOffBody,
+                    [{text: 'OK', onPress: () => console.log('OK Pressed')},], { cancelable: true });
+                console.log(error)
+            }
+        );
+    }
+
     render(){
         let body = null;
         if(Utils.OS === 'android'){
@@ -126,19 +166,41 @@ export default class QRPanel extends Component{
                                 />
                             </Ripple>
                         </View>
+                        <View style={styles.QRSection}>
+                            <Ripple onPress={() => this.invokeSTG()}>
+                                <Image
+                                    style={{width: Utils.size.height * 0.25, height: Utils.size.height * 0.25}}
+                                    source={{uri: Data.STGIcon}}
+                                />
+                            </Ripple>
+                        </View>
                     </ViewPagerAndroid>
                 )
         }else{
             body =
-                (<View style={styles.QRSection}>
-                    <Ripple onPress={() => this.setState({isQREnlarged: true})}>
-                        <QRCode
-                            value={''+Utils.base+this.state.cards[this.state.index].cardId}
-                            size={Utils.size.height * 0.25}
-                            bgColor={Utils.colors.primaryColor}
-                            fgColor='white'/>
-                    </Ripple>
-                </View>)
+                (
+                    <ViewPagerAndroid
+                        style={styles.QRSection}
+                        initialPage={0}>
+                        <View style={styles.QRSection}>
+                            <Ripple onPress={() => this.setState({isQREnlarged: true})}>
+                                <QRCode
+                                    value={''+Utils.base+this.state.cards[this.state.index].cardId}
+                                    size={Utils.size.height * 0.25}
+                                    bgColor={Utils.colors.primaryColor}
+                                    fgColor='white'/>
+                            </Ripple>
+                        </View>
+                        <View style={styles.QRSection}>
+                            <Ripple onPress={() => this.invokeSTG()}>
+                                <Image
+                                    style={{width: Utils.size.height * 0.25, height: Utils.size.height * 0.25}}
+                                    source={{uri: Data.STGIcon}}
+                                />
+                            </Ripple>
+                        </View>
+                    </ViewPagerAndroid>
+                )
         }
 
         return (
