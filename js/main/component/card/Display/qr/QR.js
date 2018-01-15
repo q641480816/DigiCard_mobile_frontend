@@ -18,6 +18,7 @@ import Modal from 'react-native-modal';
 import Utils from '../../../../../common/util';
 import Data from '../../../../../common/Data';
 let RNNFCPush = NativeModules.RNNFCPush;
+let LocationService = NativeModules.LocationService;
 
 export default class QRPanel extends Component{
     constructor(props) {
@@ -35,8 +36,8 @@ export default class QRPanel extends Component{
                     nfcOff:'Please turn on your NFC',
                     androidPushOff: 'Please turn on your Android Beam Push on Settings',
                     setting: 'Go Settings',
-                    locationOff: 'GPS is Off',
-                    locationOffBody: 'Please turn on the GPS service',
+                    locationOff: 'Location Service is Off',
+                    locationOffBody: 'Please turn on the Location service',
                     cardPublic: 'Your name card is public',
                     error0: 'NFC Not Supported',
                     error1: 'NFC Is off',
@@ -106,8 +107,7 @@ export default class QRPanel extends Component{
     }
 
     invokeSTG(){
-        navigator.geolocation.getCurrentPosition((initialPosition) =>
-            {
+        navigator.geolocation.getCurrentPosition((initialPosition) => {
                 let url = Utils.baseURL + 'stGround/';
                 fetch(`${url}`, {
                     method: 'POST',
@@ -117,8 +117,8 @@ export default class QRPanel extends Component{
                         'Authorization': `${Utils.account.secret}`
                     },
                     body: JSON.stringify({
-                        latitude: initialPosition.coords.latitude+"",
-                        longitude: initialPosition.coords.longitude+"",
+                        latitude: initialPosition.coords.latitude + "",
+                        longitude: initialPosition.coords.longitude + "",
                         id: this.state.cards[this.state.index].cardId+""
                     })
                 }).then((response) => response.text()).then((responseText) => {
@@ -132,12 +132,12 @@ export default class QRPanel extends Component{
                 }).catch(err=>{
                     console.log(err);
                 });
-            }, (error) =>
-            {
+            }, (error) => {
                 Alert.alert(this.state.content.alert.locationOff, this.state.content.alert.locationOffBody,
-                    [{text: 'OK', onPress: () => console.log('OK Pressed')},], { cancelable: true });
+                [{text: 'OK', onPress: () => console.log('OK Pressed')},], {cancelable: true});
                 console.log(error)
-            }
+            },
+            {enableHighAccuracy: false, timeout: 50000, maximumAge: 10000}
         );
     }
 

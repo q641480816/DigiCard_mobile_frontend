@@ -10,8 +10,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
-public class TryNfc extends ReactContextBaseJavaModule {
-    public TryNfc(ReactApplicationContext reactContext) {
+public class NFCService extends ReactContextBaseJavaModule {
+    public NFCService(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 

@@ -15,7 +15,9 @@ import Spinner from 'react-native-spinkit';
 import Utils from "../../common/util";
 import Toolbar from "../component/toolbar/Toolbar";
 import Card from "../component/card/Display/Card";
+import Ripple from 'react-native-material-ripple';
 import Data from "../../common/Data";
+import RefreshableList from "../component/refreshableList/RefreshableList";
 
 export default class NearbyCards extends Component{
     constructor(props) {
@@ -29,7 +31,11 @@ export default class NearbyCards extends Component{
             content: {
                 title: 'Nearby',
                 loading: 'Finding Nearby',
-                footer: 'Powered by Little Target'
+                footer: 'Powered by Little Target',
+                alert:{
+                    locationOff: 'Location Service is Off',
+                    locationOffBody: 'Please turn on the Location service',
+                }
             }
         };
 
@@ -122,12 +128,11 @@ export default class NearbyCards extends Component{
             return(
                 <View style={[styles.container]}>
                     <Toolbar ref={'toolbar'} title={this.state.content.title} loading={true}/>
-                    <ListView
-                        style={{marginTop: 5}}
-                        enableEmptySections={true}
-                        dataSource={this.state.dataSource}
-                        renderRow={(card) => this.renderRow(card)}
-                        renderFooter={() => this.renderFooter()}
+                    <RefreshableList
+                        cards={this.state.cards}
+                        renderRow={this.renderRow}
+                        renderFooter={this.renderFooter}
+                        refresh={this.init_data}
                     />
                 </View>
             )
