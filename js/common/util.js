@@ -69,6 +69,61 @@ const Utils = {
         defaultGroup: 'Ungrouped'
     },
     cFunctions: {
+        fetch:{
+            get: (URL)=>{
+                return new Promise((resolve, reject) => {
+                    fetch(`${URL}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `${Utils.account.secret}`
+                        }
+                    }).then((response) => response.text()).then((responseText) => {
+                        let response = JSON.parse(responseText);
+                        if (response.status === 1) {
+                            //resolve
+                            resolve(response);
+                        } else {
+                            console.log("something is wrong");
+                            //TODO: ADD SOME CATCH
+
+                            reject(Error(response.status));
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                        return Utils.cFunctions.fetch.get(URL);
+                    });
+                });
+            },
+            post: (URL, body) => {
+                return new Promise((resolve, reject) => {
+                    fetch(`${URL}`, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `${Utils.account.secret}`
+                        },
+                        body: JSON.stringify(body)
+                    }).then((response) => response.text()).then((responseText) => {
+                        let response = JSON.parse(responseText);
+                        if (response.status === 1) {
+                            //resolve
+                            resolve(response);
+                        } else {
+                            console.log("something is wrong");
+                            //TODO: ADD SOME CATCH
+
+                            reject(Error(response.status));
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                        reject(err);
+                    });
+                });
+            }
+        },
         getCardMatrix: (width)=>{
             let widthNew = width * 0.985;
             let height = widthNew / Utils.ratio;

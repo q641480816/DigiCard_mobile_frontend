@@ -109,27 +109,14 @@ export default class QRPanel extends Component{
     invokeSTG(){
         navigator.geolocation.getCurrentPosition((initialPosition) => {
                 let url = Utils.baseURL + 'stGround/';
-                fetch(`${url}`, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Authorization': `${Utils.account.secret}`
-                    },
-                    body: JSON.stringify({
-                        latitude: initialPosition.coords.latitude + "",
-                        longitude: initialPosition.coords.longitude + "",
-                        id: this.state.cards[this.state.index].cardId+""
-                    })
-                }).then((response) => response.text()).then((responseText) => {
-                    let response = JSON.parse(responseText);
-                    if(response.status === 1){
-                        Alert.alert(this.state.content.alert.cardPublic, "", [{text: 'OK', onPress: () => console.log('OK Pressed')},], { cancelable: true });
-                    }else{
-                        //TODO: Catch
-                    }
-                    //console.log(response)
-                }).catch(err=>{
+                Utils.cFunctions.fetch.post(url, {
+                    latitude: initialPosition.coords.latitude + "",
+                    longitude: initialPosition.coords.longitude + "",
+                    id: this.state.cards[this.state.index].cardId+""
+                }).then(response => {
+                    Alert.alert(this.state.content.alert.cardPublic, "", [{text: 'OK', onPress: () => console.log('OK Pressed')},], { cancelable: true });
+                }).catch(err => {
+                    //TODO: CATCH
                     console.log(err);
                 });
             }, (error) => {

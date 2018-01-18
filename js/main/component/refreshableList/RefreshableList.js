@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import {
-    ListView,
+    FlatList,
     StyleSheet,
     Text,
     View,
-    Animated,
-    PanResponder, Easing
+    RefreshControl
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { responsiveFontSize,responsiveHeight,responsiveWidth } from '../../component/responsive/responsive';
@@ -15,93 +14,30 @@ export default class RefreshableList extends Component{
     constructor(props) {
         super(props);
 
-        this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            isRefreshing: false,
-            dataSource: this.ds.cloneWithRows([]),
-            dis: 0,
-            config: {
-                height: new Animated.Value(0)
-            }
+            refreshing: false,
+            data: []
         };
 
-        this.listviewOffsetY = 0;
-        this.setPanResponder = this.setPanResponder.bind(this);
+        this.count = 0;
         this.renderRow = this.renderRow.bind(this);
         this.renderFooter = this.renderFooter.bind(this);
     }
 
     componentWillMount(){
         this.setState({
-            dataSource: this.ds.cloneWithRows(this.props.cards)
+            data: this.props.data,
         });
-        this.setPanResponder();
     }
 
     componentWillReceiveProps(nextProps){
-        if (this.state.dis !== 0){
             this.setState({
-                dataSource: this.ds.cloneWithRows(nextProps.cards),
-                dis: 0,
-                isRefreshing: false
-            });
-            Animated.timing(this.state.config.height, {
-                toValue: 0,
-                duration: 500,
-                easing: Easing.spring
-            }).start();
-        }else{
-            this.setState({
-                dataSource: this.ds.cloneWithRows(nextProps.cards)
+                data: nextProps.data,
             })
-        }
     }
 
-    setPanResponder() {
-        this._panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: (evt, gestureState) => false,
-            onMoveShouldSetPanResponder: (evt, gestureState) => {
-                //console.log(gestureState.dy)
-                if (this.state.isRefreshing){
-                    return false;
-                }else if(this.listviewOffsetY !== 0){
-                    return false;
-                }else if(gestureState.dy < 0){
-                    return false;
-                }
-                return true;
-            },
-            onPanResponderGrant: (evt, gestureState) => {
-                console.log("Grant")
-            },
-            onPanResponderMove: (evt, gestureState) => {
-                let dis = gestureState.dy*0.7;
-                this.setState({
-                    dis: dis,
-                    config:{
-                        height: new Animated.Value(dis)
-                    }
-                });
-            },
-            onPanResponderRelease: () => {
-                let end = 0;
-                if(this.state.dis >= Utils.size.height*0.1){
-                    end = Utils.size.height*0.1;
-                    this.setState({
-                        isRefreshing: true
-                    })
-                }
-                Animated.timing(this.state.config.height, {
-                    toValue: end,
-                    duration: 500,
-                    easing: Easing.spring
-                }).start(() => this.props.refresh());
-            }
-        });
-    }
-
-    renderRow(card){
-        return this.props.renderRow(card);
+    renderRow(item){
+        return this.props.renderRow(item);
     }
 
     renderFooter(){
@@ -109,18 +45,38 @@ export default class RefreshableList extends Component{
     }
 
     render(){
+        this.count = 0;
         return(
-            <View style={[styles.container]} {...this._panResponder.panHandlers}>
-                <Animated.View style={[styles.refresh,{width: Utils.size.width, height:this.state.config.height}]}>
-
-                </Animated.View>
-                <ListView
-                    onScroll={(e) => {this.listviewOffsetY = e.nativeEvent.contentOffset.y; console.log(this.listviewOffsetY)}}
-                    style={{marginTop: 5}}
-                    enableEmptySections={true}
-                    dataSource={this.state.dataSource}
-                    renderRow={(card) => this.renderRow(card)}
-                    renderFooter={() => this.renderFooter()}
+            <View style={[styles.container]}>
+                <FlatList
+                    data={this.state.data}
+                    renderItem={({item}) => this.renderRow(item)}
+                    ListFooterComponent={() => this.renderFooter()}
+                    keyExtractor={()=>{
+                        this.count++;
+                        return this.count;
+                    }}
+                    refreshControl={
+                        <RefreshControl
+                            colors={[Utils.colors.secondaryColor]}
+                            refreshing={this.state.refreshing}
+                            onRefresh={() => {
+                                this.setState({
+                                    refreshing: true
+                                });
+                                this.props.refresh().then(()=>{
+                                    this.setState({
+                                        refreshing: false
+                                    });
+                                }).catch(err =>{
+                                    //TODO: CATCH
+                                    console.log(err);
+                                    this.setState({
+                                        refreshing: false
+                                    });
+                                })
+                            }}/>
+                    }
                 />
             </View>
         );
@@ -133,15 +89,15 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         backgroundColor: 'white'
     },
-   refresh:{
+    refresh:{
         width: Utils.size.width,
-       flexDirection: 'row',
-       backgroundColor: '#E0E0E0'
-   }
+        flexDirection: 'row',
+        backgroundColor: '#E0E0E0'
+    }
 });
 
 RefreshableList.propTypes = {
-    cards: PropTypes.array.isRequired,
+    data: PropTypes.array.isRequired,
     renderRow: PropTypes.func.isRequired,
     renderFooter: PropTypes.func.isRequired,
     refresh: PropTypes.func.isRequired

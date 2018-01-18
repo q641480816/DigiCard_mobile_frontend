@@ -78,24 +78,14 @@ export default class AllCardContent extends Component{
     getAllCardsOnline(isSync){
         this.props.setHttp(true);
         let url = Utils.baseURL + 'accounts/'+Utils.account.accountId+'/allCards';
-        fetch(`${url}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `${Utils.account.secret}`
-            }
-        }).then((response) => response.text()).then((responseText) => {
+        Utils.cFunctions.fetch.get(url).then(response => {
             this.props.setHttp(false);
-            let response = JSON.parse(responseText);
-            if(response.status === 1){
-                let cards = Utils.cFunctions.sortAllCards(response.data.cards);
-                this.setState({groups: cards});
-                Utils.cFunctions.updateAllCardsLocal(response.data.lastUpdate,cards,Utils.account.accountId,isSync);
-            }else{
-                //TODO: Catch
-            }
-        }).catch(err=>{
+            console.log(response)
+            let cards = Utils.cFunctions.sortAllCards(response.data.cards);
+            this.setState({groups: cards});
+            Utils.cFunctions.updateAllCardsLocal(response.data.lastUpdate,cards,Utils.account.accountId,isSync);
+        }).catch(err => {
+            // TODO: CATCH
             this.props.setHttp(false);
             console.log(err);
         });

@@ -62,32 +62,20 @@ export default class ManageGroup extends Component{
     addNewGroup(){
         this.refs.toolbar.setLoadingShow(true);
         let url = Utils.baseURL + 'accountCards';
-        fetch(`${url}`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `${Utils.account.secret}`
-            },
-            body: JSON.stringify({
-                accountId: Utils.account.accountId,
-                group: this.state.newGroupName
-            })
-        }).then((response) => response.text()).then((responseText) => {
+        Utils.cFunctions.fetch.post(url,{
+            accountId: Utils.account.accountId,
+            group: this.state.newGroupName
+        }).then(response => {
             this.refs.toolbar.setLoadingShow(false);
-            let response = JSON.parse(responseText);
-            if(response.status === 1){
-                let groups = this.state.groups;
-                groups.push({group:this.state.newGroupName,cards:[]});
-                this.setState({groups:groups,newGroupName:'',editProperty:null});
-                this.props.navigation.state.params.updateCardMini(groups,response.data.account.lastUpdate,()=>{},false);
-            }else {
-                //TODO:
-            }
+            let groups = this.state.groups;
+            groups.push({group:this.state.newGroupName,cards:[]});
+            this.setState({groups:groups,newGroupName:'',editProperty:null});
+            this.props.navigation.state.params.updateCardMini(groups,response.data.account.lastUpdate,()=>{},false);
         }).catch(err=>{
+            //TODO
+            console.log(err);
             this.refs.toolbar.setLoadingShow(false);
             console.log(err);
-            this.addNewGroup();
         });
     }
 

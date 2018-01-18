@@ -78,28 +78,15 @@ export default class MyCardContent extends Component{
     getCardsOnline(){
         this.props.setHttp(true);
         let url = Utils.baseURL + 'accounts/'+Utils.account.accountId+'/myCards';
-        fetch(`${url}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `${Utils.account.secret}`
-            }
-        }).then((response) => response.text()).then((responseText) => {
+        Utils.cFunctions.fetch.get(url).then(response => {
             this.props.setHttp(false);
-            let response = JSON.parse(responseText);
-            if(response.status === 1){
-                this.setState({
-                    cards: response.data.cards
-                });
-                Utils.cFunctions.updateMyCardsLocal(response.data.lastEdit,response.data.cards,Utils.account.accountId);
-            }else{
-                console.log("something is wrong");
-                //TODO: ADD SOME CATCH
-            }
-        }).catch(err=>{
+            this.setState({
+                cards: response.data.cards
+            });
+            Utils.cFunctions.updateMyCardsLocal(response.data.lastEdit,response.data.cards,Utils.account.accountId);
+        }).catch(err => {
             this.props.setHttp(false);
-            this.getCardsOnline();
+            //TODO: CATCH
         });
     }
 
@@ -127,27 +114,14 @@ export default class MyCardContent extends Component{
         this.setState({cards:tempCards});
         this.props.updateView(1);
         let url = Utils.baseURL + 'cards';
-        fetch(`${url}`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `${Utils.account.secret}`
-            },
-            body: JSON.stringify(card)
-        }).then((response) => response.text()).then((responseText) => {
+        Utils.cFunctions.fetch.post(url, card).then(response => {
             this.props.setHttp(false);
-            let response = JSON.parse(responseText);
-            if(response.status === 1){
-                tempCards[tempCards.length-1] = response.data;
-                Utils.cFunctions.updateMyCardsLocal(response.data.lastEdit,tempCards,Utils.account.accountId);
-            }else{
-                console.log('something is wrong');
-            }
-        }).catch(err=>{
+            tempCards[tempCards.length-1] = response.data;
+            Utils.cFunctions.updateMyCardsLocal(response.data.lastEdit,tempCards,Utils.account.accountId);
+        }).catch(err => {
+            //TODO: CATCH
             this.props.setHttp(false);
             console.log(err);
-            this.saveNew(card);
         });
     }
 

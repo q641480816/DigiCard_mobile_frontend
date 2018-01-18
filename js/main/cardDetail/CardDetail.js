@@ -86,23 +86,12 @@ export default class CardDetail extends Component{
     getCardOnline(){
         console.log("get card online");
         let url = Utils.baseURL + 'cards/'+this.props.navigation.state.params.id;
-        fetch(`${url}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `${Utils.account.secret}`
-            }
-        }).then((response) => response.text()).then((responseText) => {
-            let response = JSON.parse(responseText);
-            if(response.status === 1){
-                let card = response.data;
-                this.setState({cardValue: card,index: this.props.navigation.state.params.index,gIndex: this.props.navigation.state.params.gIndex,groups:this.props.navigation.state.params.groups});
-                Utils.cFunctions.updateAccountCard(card,Utils.account.accountId+"");
-            }else{
-                //TODO
-            }
-        }).catch(err=>{
+        Utils.cFunctions.fetch.get(url).then(response => {
+            let card = response.data;
+            this.setState({cardValue: card,index: this.props.navigation.state.params.index,gIndex: this.props.navigation.state.params.gIndex,groups:this.props.navigation.state.params.groups});
+            Utils.cFunctions.updateAccountCard(card,Utils.account.accountId+"");
+        }).catch(err => {
+            //TODO: CATCH
             console.log(err);
         });
     }

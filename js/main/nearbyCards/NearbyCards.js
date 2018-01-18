@@ -62,27 +62,19 @@ export default class NearbyCards extends Component{
     }
 
     init_data(){
-        let url = Utils.baseURL + 'stGround/' + this.state.coors.latitude + "," + this.state.coors.longitude;
-        fetch(`${url}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `${Utils.account.secret}`
-            }
-        }).then((response) => response.text()).then((responseText) => {
-            let response = JSON.parse(responseText);
-            if(response.status === 1){
+        return new Promise((resolve, reject) => {
+            let url = Utils.baseURL + 'stGround/' + this.state.coors.latitude + "," + this.state.coors.longitude;
+            Utils.cFunctions.fetch.get(url).then(response => {
                 this.setState({
                     cards: response.data,
                     dataSource: this.ds.cloneWithRows(response.data),
                 });
-            }else{
-                console.log("something is wrong");
-                //TODO: ADD SOME CATCH
-            }
-        }).catch(err=>{
-            this.init_data();
+
+                resolve();
+            }).catch(err => {
+                console.log(err);
+                reject(Error("catch"));
+            });
         });
     }
 
@@ -97,7 +89,7 @@ export default class NearbyCards extends Component{
     renderRow(card){
         if (card.cardId !== Utils.account.accountId) {
             return (
-                <View style={{flexDirection:'row'}}>
+                <View style={{flexDirection:'row'}} key={card.cardId}>
                     <View style={[styles.sideFrame,{alignItems: 'center'}]}>
                         <Image
                             style={{width: Utils.size.width * 0.175, height: Utils.size.width * 0.175,borderRadius:90,borderWidth:1,borderColor: 'grey',marginTop:5}}
@@ -111,7 +103,7 @@ export default class NearbyCards extends Component{
             );
         }else{
             return (
-                <View/>
+                <View key={card.cardId}/>
             )
         }
     }
@@ -129,7 +121,7 @@ export default class NearbyCards extends Component{
                 <View style={[styles.container]}>
                     <Toolbar ref={'toolbar'} title={this.state.content.title} loading={true}/>
                     <RefreshableList
-                        cards={this.state.cards}
+                        data={this.state.cards}
                         renderRow={this.renderRow}
                         renderFooter={this.renderFooter}
                         refresh={this.init_data}
@@ -160,4 +152,4 @@ const styles = StyleSheet.create({
         width: Utils.size.width*0.75,
         height: Utils.size.width*0.75/Utils.ratio
     }
-})
+});
