@@ -198,6 +198,8 @@ export default class QRPanel extends Component{
                 </View>
                 {body}
                 <Modal isVisible={this.state.isQREnlarged} animationInTiming={300} animationOutTiming={300}
+                       animationIn={'fadeIn'}
+                       animationOut={'fadeOut'}
                        onBackButtonPress={() => this.setState({isQREnlarged: false})}
                        onBackdropPress={() => this.setState({isQREnlarged: false})}>
                     <View style={styles.modal}>

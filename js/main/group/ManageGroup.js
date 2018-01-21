@@ -12,7 +12,8 @@ import { responsiveFontSize } from '../component/responsive/responsive';
 import Ripple from "react-native-material-ripple";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import Modal from 'react-native-modal';
+import Modal from "react-native-modal";
+
 import { Sae } from 'react-native-textinput-effects';
 
 import ElevatedView from "../component/elevatedView/ElevatedView";
@@ -84,47 +85,33 @@ export default class ManageGroup extends Component{
         if(this.state.tempGroupName !== this.state.groups[Number(attr[1])].group) {
             this.refs.toolbar.setLoadingShow(true);
             let url = Utils.baseURL + 'accountCards';
-            fetch(`${url}`, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `${Utils.account.secret}`
-                },
-                body: JSON.stringify({
-                    accountId: Utils.account.accountId,
-                    group: this.state.groups[Number(attr[1])].group,
-                    newGroup: this.state.tempGroupName
-                })
-            }).then((response) => response.text()).then((responseText) => {
+            Utils.cFunctions.fetch.put(url, {
+                accountId: Utils.account.accountId,
+                group: this.state.groups[Number(attr[1])].group,
+                newGroup: this.state.tempGroupName
+            }).then(response => {
                 this.refs.toolbar.setLoadingShow(false);
-                let response = JSON.parse(responseText);
-                if (response.status === 1) {
-                    let groups = this.state.groups;
-                    let gIndex = -1;
-                    for (let i = 1; i < this.state.groups.length; i++) {
-                        if (groups[i].group === this.state.tempGroupName) {
-                            gIndex = i;
-                            break;
-                        }
+                let groups = this.state.groups;
+                let gIndex = -1;
+                for (let i = 1; i < this.state.groups.length; i++) {
+                    if (groups[i].group === this.state.tempGroupName) {
+                        gIndex = i;
+                        break;
                     }
-                    if (gIndex < 0) {
-                        // new
-                        groups[Number(attr[1])].group = this.state.tempGroupName;
-                    } else {
-                        groups[gIndex].cards = groups[gIndex].cards.concat(groups[Number(attr[1])].cards);
-                        groups.splice(Number(attr[1]), 1);
-                    }
-                    this.setState({groups: groups, tempGroupName: '', editProperty: null});
-                    this.props.navigation.state.params.updateCardMini(groups, response.data.lastUpdate, () => {
-                    }, false);
-                } else {
-                    //TODO:
                 }
+                if (gIndex < 0) {
+                    // new
+                    groups[Number(attr[1])].group = this.state.tempGroupName;
+                } else {
+                    groups[gIndex].cards = groups[gIndex].cards.concat(groups[Number(attr[1])].cards);
+                    groups.splice(Number(attr[1]), 1);
+                }
+                this.setState({groups: groups, tempGroupName: '', editProperty: null});
+                this.props.navigation.state.params.updateCardMini(groups, response.data.lastUpdate, () => {}, false);
             }).catch(err => {
                 this.refs.toolbar.setLoadingShow(false);
+                //TODO
                 console.log(err);
-                this.updateGroupName();
             });
         }else{
             //no need to update
@@ -149,33 +136,22 @@ export default class ManageGroup extends Component{
     deleteGroup(index){
         this.refs.toolbar.setLoadingShow(true);
         let url = Utils.baseURL + 'accountCards';
-        fetch(`${url}`, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `${Utils.account.secret}`
-            },
-            body: JSON.stringify({
-                group: this.state.groups[index].group,
-                accountId: Utils.account.accountId,
-                newGroup: Utils.action.defaultGroup
-            })
-        }).then((response) => response.text()).then((responseText) => {
+        Utils.cFunctions.fetch.put(url, {
+            group: this.state.groups[index].group,
+            accountId: Utils.account.accountId,
+            newGroup: Utils.action.defaultGroup
+        }).then(response => {
             this.refs.toolbar.setLoadingShow(false);
-            let response = JSON.parse(responseText);
-            if(response.status === 1){
-                let groups = this.state.groups;
-                groups[0].cards = groups[0].cards.concat(groups[index].cards);
-                groups.splice(index,1);
-                this.setState({groups:groups});
-                this.props.navigation.state.params.updateCardMini(groups,response.data.lastUpdate,()=>{},false);
-            }else{
-                //TODO
-            }
-        }).catch(err=>{
+            let groups = this.state.groups;
+            groups[0].cards = groups[0].cards.concat(groups[index].cards);
+            groups.splice(index,1);
+            this.setState({groups:groups});
+            this.props.navigation.state.params.updateCardMini(groups,response.data.lastUpdate,()=>{},false);
+        }).catch(err => {
+            //TODO
             console.log(err);
             this.refs.toolbar.setLoadingShow(false);
+            console.log(err);
         });
     }
 
@@ -215,7 +191,9 @@ export default class ManageGroup extends Component{
                     </Ripple>
                     {this.groups}
                 </ScrollView>
-                <Modal  isVisible={this.state.editProperty === 'newGroup'} animationInTiming={10} animationOutTiming={10}
+                <Modal  isVisible={this.state.editProperty === 'newGroup'} animationInTiming={300} animationOutTiming={300}
+                        animationIn={'fadeIn'}
+                        animationOut={'fadeOut'}
                         onBackButtonPress={() => console.log('')}
                         onBackdropPress={() => console.log("")}
                         style={{alignItems:'center'}}>
@@ -251,7 +229,9 @@ export default class ManageGroup extends Component{
                         </View>
                     </ElevatedView>
                 </Modal>
-                <Modal  isVisible={this.state.editProperty !== null && this.state.editProperty.indexOf('editGroup') >= 0} animationInTiming={10} animationOutTiming={10}
+                <Modal  isVisible={this.state.editProperty !== null && this.state.editProperty.indexOf('editGroup') >= 0} animationInTiming={300} animationOutTiming={300}
+                        animationIn={'fadeIn'}
+                        animationOut={'fadeOut'}
                         onBackButtonPress={() => console.log('')}
                         onBackdropPress={() => console.log("")}
                         style={{alignItems:'center'}}>

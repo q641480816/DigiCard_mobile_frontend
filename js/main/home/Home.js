@@ -126,6 +126,7 @@ export default class Home extends Component{
     }
 
     measureHeight(event){
+        Utils.size.realVerticalH = event.nativeEvent.layout.height;
         if(!this.state.isInitialized) {
             this.setState({
                 isInitialized:true,

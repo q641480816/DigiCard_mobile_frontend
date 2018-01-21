@@ -100,33 +100,19 @@ export default class CardDetail extends Component{
         if(ngIndex !== this.state.gIndex) {
             this.refs.toolbar.setLoadingShow(true);
             let url = Utils.baseURL + 'accountCards/' + this.state.groups[this.state.gIndex].cards[this.state.index].accountCardId;
-            fetch(`${url}`, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `${Utils.account.secret}`
-                },
-                body: JSON.stringify({
-                    group: this.state.groups[ngIndex].group
-                })
-            }).then((response) => response.text()).then((responseText) => {
+            Utils.cFunctions.fetch.put(url, {
+                group: this.state.groups[ngIndex].group
+            }).then(response => {
                 this.refs.toolbar.setLoadingShow(false);
-                let response = JSON.parse(responseText);
-                console.log(response);
-                if (response.status === 1) {
-                    let groups = this.state.groups;
-                    groups[ngIndex].cards.push(groups[this.state.gIndex].cards[this.state.index]);
-                    groups[this.state.gIndex].cards.splice(this.state.index, 1);
-                    this.setState({gIndex: ngIndex, index: (groups[ngIndex].cards.length - 1), groups: groups});
-                    this.props.navigation.state.params.updateCardsMini(groups, response.data.account.lastUpdate, () => {
-                    }, false);
-                } else {
-                    // TODO:
-                }
-            }).catch(e => {
+                let groups = this.state.groups;
+                groups[ngIndex].cards.push(groups[this.state.gIndex].cards[this.state.index]);
+                groups[this.state.gIndex].cards.splice(this.state.index, 1);
+                this.setState({gIndex: ngIndex, index: (groups[ngIndex].cards.length - 1), groups: groups});
+                this.props.navigation.state.params.updateCardsMini(groups, response.data.account.lastUpdate, () => {}, false);
+            }).catch(err => {
                 this.refs.toolbar.setLoadingShow(false);
-                this.updateGroup(ngIndex);
+                //TODO
+                console.log(err);
             });
         }
     }
@@ -134,31 +120,18 @@ export default class CardDetail extends Component{
     updateCardName(){
         this.refs.toolbar.setLoadingShow(true);
         let url = Utils.baseURL + 'accountCards/'+this.state.groups[this.state.gIndex].cards[this.state.index].accountCardId;
-        fetch(`${url}`, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `${Utils.account.secret}`
-            },
-            body: JSON.stringify({
-                name: this.state.tempCardName
-            })
-        }).then((response) => response.text()).then((responseText) => {
+        Utils.cFunctions.fetch.put(url, {
+            name: this.state.tempCardName
+        }).then(response => {
             this.refs.toolbar.setLoadingShow(false);
-            let response = JSON.parse(responseText);
-            if(response.status === 1){
-                let groups = this.state.groups;
-                groups[this.state.gIndex].cards[this.state.index].name = response.data.name;
-                this.setState({editProperty:null,groups: groups});
-                this.props.navigation.state.params.updateCardsMini(groups,response.data.account.lastUpdate,()=>{},false);
-            }else{
-                //TODO:
-            }
-        }).catch(err=>{
+            let groups = this.state.groups;
+            groups[this.state.gIndex].cards[this.state.index].name = response.data.name;
+            this.setState({editProperty:null,groups: groups});
+            this.props.navigation.state.params.updateCardsMini(groups,response.data.account.lastUpdate,()=>{},false);
+        }).catch(err => {
             this.refs.toolbar.setLoadingShow(false);
+            //TODO
             console.log(err);
-            this.updateCardName();
         });
     }
 
@@ -285,9 +258,11 @@ export default class CardDetail extends Component{
                                          action: this.deleteCard
                                      }]}
                     />
-                    <Modal  isVisible={this.state.editProperty === 'name'} animationInTiming={10} animationOutTiming={10}
-                            onBackButtonPress={() => this.updateCardName()}
-                            onBackdropPress={() => this.updateCardName()}>
+                    <Modal isVisible={this.state.editProperty === 'name'} animationInTiming={300} animationOutTiming={300}
+                           animationIn={'fadeIn'}
+                           animationOut={'fadeOut'}
+                           onBackButtonPress={() => this.updateCardName()}
+                           onBackdropPress={() => this.updateCardName()}>
                         <Sae
                             label={this.state.content.name}
                             iconClass={FontAwesomeIcon}

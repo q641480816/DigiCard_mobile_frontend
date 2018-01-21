@@ -75,7 +75,10 @@ export default class AllCard extends Component{
                 <View style={[styles.content,{height:this.state.contentHeight}]}>
                     <AllCardContent ref={'content'} showCardModal={this.showCardModal} navigation={this.props.navigation} setHttp={this.setHttp}/>
                 </View>
-                <Modal isVisible={this.state.isShowCardModal} animationInTiming={5} animationOutTiming={5} style={{margin:0}}
+                <Modal isVisible={this.state.isShowCardModal} animationInTiming={300} animationOutTiming={300}
+                       animationIn={'fadeIn'}
+                       animationOut={'fadeOut'}
+                       style={{margin:0}}
                        onBackButtonPress={() => this.setState({isShowCardModal: false})}
                        onBackdropPress={() => this.setState({isShowCardModal: false})}>
                     <Card width={Utils.size.width} index={0} cardValue={this.state.selectedCard}/>

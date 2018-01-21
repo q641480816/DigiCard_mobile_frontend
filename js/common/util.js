@@ -58,7 +58,8 @@ const Utils = {
     OS: Platform.OS,
     size: {
         height: Dimensions.get('window').height,
-        width: Dimensions.get('window').width
+        width: Dimensions.get('window').width,
+        realVerticalH: 0
     },
     ratio: 85.60/53.98,
     action: {
@@ -100,6 +101,33 @@ const Utils = {
                 return new Promise((resolve, reject) => {
                     fetch(`${URL}`, {
                         method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `${Utils.account.secret}`
+                        },
+                        body: JSON.stringify(body)
+                    }).then((response) => response.text()).then((responseText) => {
+                        let response = JSON.parse(responseText);
+                        if (response.status === 1) {
+                            //resolve
+                            resolve(response);
+                        } else {
+                            console.log("something is wrong");
+                            //TODO: ADD SOME CATCH
+
+                            reject(Error(response.status));
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                        reject(err);
+                    });
+                });
+            },
+            put: (URL, body) => {
+                return new Promise((resolve, reject) => {
+                    fetch(`${URL}`, {
+                        method: 'PUT',
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',

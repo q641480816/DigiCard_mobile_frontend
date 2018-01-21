@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     StyleSheet,
     Text,
-    View
+    View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { responsiveFontSize,responsiveHeight,responsiveWidth } from '../../component/responsive/responsive';
@@ -131,27 +131,15 @@ export default class MyCardContent extends Component{
         tempCards[index] = card;
         this.setState({cards: tempCards});
         let url = Utils.baseURL + 'cards/' + card.cardId;
-        fetch(`${url}`, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `${Utils.account.secret}`
-            },
-            body: JSON.stringify(card)
-        }).then((response) => response.text()).then((responseText) => {
+
+        Utils.cFunctions.fetch.put(url, card).then(response => {
             this.props.setHttp(false);
-            let response = JSON.parse(responseText);
-            if(response.status === 1){
-                tempCards[index] = response.data;
-                Utils.cFunctions.updateMyCardsLocal(response.data.lastEdit,tempCards,Utils.account.accountId);
-            }else{
-                console.log('something is wrong');
-            }
-        }).catch(err=>{
+            tempCards[index] = response.data;
+            Utils.cFunctions.updateMyCardsLocal(response.data.lastEdit,tempCards,Utils.account.accountId);
+        }).catch( err => {
             this.props.setHttp(false);
+            //TODO
             console.log(err);
-            this.saveEdit(index,card)
         });
     }
 

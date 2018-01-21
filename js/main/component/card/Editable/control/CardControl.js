@@ -112,8 +112,10 @@ export default class CardControl extends Component{
                                 </Text>
                             </Button>
                         </View>
-                        <Modal isVisible={this.state.editProperty === 'name'} animationInTiming={10} animationOutTiming={10}
-                                onBackButtonPress={() => this.updateCardProperty("",true)}
+                        <Modal isVisible={this.state.editProperty === 'name'} animationInTiming={300} animationOutTiming={300}
+                               animationIn={'fadeIn'}
+                               animationOut={'fadeOut'}
+                               onBackButtonPress={() => this.updateCardProperty("",true)}
                                 onBackdropPress={() => this.updateCardProperty("",true)}>
                             <Sae
                                 label={this.state.content.name}

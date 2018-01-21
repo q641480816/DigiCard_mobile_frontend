@@ -400,7 +400,9 @@ export default class CardTextControl extends Component{
                                 </Text>
                             </Button>
                         </View>
-                        <Modal  isVisible={this.state.editProperty === 'value'} animationInTiming={10} animationOutTiming={10}
+                        <Modal  isVisible={this.state.editProperty === 'value'} animationInTiming={300} animationOutTiming={300}
+                                animationIn={'fadeIn'}
+                                animationOut={'fadeOut'}
                                 onBackButtonPress={() => this.updateInputProperty("",true)}
                                 onBackdropPress={() => this.updateInputProperty("",true)}>
                             <Sae
@@ -414,7 +416,9 @@ export default class CardTextControl extends Component{
                                 onChangeText={(value) => this.updateInputProperty(value,false)}
                             />
                         </Modal>
-                        <Modal  isVisible={this.state.editProperty === 'tag'} animationInTiming={10} animationOutTiming={10}
+                        <Modal  isVisible={this.state.editProperty === 'tag'} animationInTiming={300} animationOutTiming={300}
+                                animationIn={'fadeIn'}
+                                animationOut={'fadeOut'}
                                 onBackButtonPress={() => this.updateInputProperty("",true)}
                                 onBackdropPress={() => this.updateInputProperty("",true)}>
                             <Sae
@@ -428,7 +432,9 @@ export default class CardTextControl extends Component{
                                 onChangeText={(value) => this.updateInputProperty(value,false)}
                             />
                         </Modal>
-                        <Modal  isVisible={this.state.editProperty === 'left'} animationInTiming={10} animationOutTiming={10}
+                        <Modal  isVisible={this.state.editProperty === 'left'} animationInTiming={300} animationOutTiming={300}
+                                animationIn={'fadeIn'}
+                                animationOut={'fadeOut'}
                                 onBackButtonPress={() => this.updateInputLocation("",true)}
                                 onBackdropPress={() => this.updateInputLocation("",true)}>
                             <Sae
@@ -443,7 +449,9 @@ export default class CardTextControl extends Component{
                                 onChangeText={(value) => this.updateInputLocation(value,false)}
                             />
                         </Modal>
-                        <Modal  isVisible={this.state.editProperty === 'right'} animationInTiming={10} animationOutTiming={10}
+                        <Modal  isVisible={this.state.editProperty === 'right'} animationInTiming={300} animationOutTiming={300}
+                                animationIn={'fadeIn'}
+                                animationOut={'fadeOut'}
                                 onBackButtonPress={() => this.updateInputLocation("",true)}
                                 onBackdropPress={() => this.updateInputLocation("",true)}>
                             <Sae
@@ -458,7 +466,9 @@ export default class CardTextControl extends Component{
                                 onChangeText={(value) => this.updateInputLocation(value,false)}
                             />
                         </Modal>
-                        <Modal  isVisible={this.state.editProperty === 'top'} animationInTiming={10} animationOutTiming={10}
+                        <Modal  isVisible={this.state.editProperty === 'top'} animationInTiming={300} animationOutTiming={300}
+                                animationIn={'fadeIn'}
+                                animationOut={'fadeOut'}
                                 onBackButtonPress={() => this.updateInputLocation("",true)}
                                 onBackdropPress={() => this.updateInputLocation("",true)}>
                             <Sae
@@ -473,7 +483,9 @@ export default class CardTextControl extends Component{
                                 onChangeText={(value) => this.updateInputLocation(value,false)}
                             />
                         </Modal>
-                        <Modal  isVisible={this.state.editProperty === 'bottom'} animationInTiming={10} animationOutTiming={10}
+                        <Modal  isVisible={this.state.editProperty === 'bottom'} animationInTiming={300} animationOutTiming={300}
+                                animationIn={'fadeIn'}
+                                animationOut={'fadeOut'}
                                 onBackButtonPress={() => this.updateInputLocation("",true)}
                                 onBackdropPress={() => this.updateInputLocation("",true)}>
                             <Sae
