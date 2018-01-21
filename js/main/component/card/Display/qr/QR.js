@@ -137,7 +137,9 @@ export default class QRPanel extends Component{
                         style={styles.QRSection}
                         initialPage={0}>
                         <View style={styles.QRSection}>
-                            <Ripple onPress={() => this.setState({isQREnlarged: true})}>
+                            <Ripple onPress={() => {
+                                this.setState({isQREnlarged: true});
+                            }}>
                                 <QRCode
                                     value={''+Utils.base+this.state.cards[this.state.index].cardId}
                                     size={Utils.size.height * 0.25}
@@ -197,9 +199,7 @@ export default class QRPanel extends Component{
                         style={styles.name}>{this.state.content.cardName} {this.state.cards[this.state.index].cardName + " (" + (this.state.index + 1) + "/" + this.state.cards.length + ")"}</Text>
                 </View>
                 {body}
-                <Modal isVisible={this.state.isQREnlarged} animationInTiming={300} animationOutTiming={300}
-                       animationIn={'fadeIn'}
-                       animationOut={'fadeOut'}
+                <Modal isVisible={this.state.isQREnlarged} animationInTiming={5} animationOutTiming={5}
                        onBackButtonPress={() => this.setState({isQREnlarged: false})}
                        onBackdropPress={() => this.setState({isQREnlarged: false})}>
                     <View style={styles.modal}>

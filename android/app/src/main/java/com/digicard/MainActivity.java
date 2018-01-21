@@ -8,8 +8,10 @@ import android.content.res.Configuration;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.digicard.util.ActivityManager;
 import com.digicard.util.MNdefMessage;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.bridge.Arguments;
@@ -20,6 +22,7 @@ public class MainActivity extends ReactActivity {
 
     private NfcAdapter nfcAdapter;
     private PendingIntent mNfcPendingIntent;
+    private static final String name = "main";
 
     /**
      * Returns the name of the main component registered from JavaScript.
@@ -30,7 +33,6 @@ public class MainActivity extends ReactActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         init();
     }
 
@@ -39,6 +41,8 @@ public class MainActivity extends ReactActivity {
         mNfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         //onNewIntent(this.getIntent());
         //Toast.makeText(this,getIntent().getAction(),Toast.LENGTH_LONG).show();
+
+        ActivityManager.addActivity(this,name);
     }
 
     @Override
