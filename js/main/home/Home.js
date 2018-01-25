@@ -12,13 +12,13 @@ import Orientation from 'react-native-orientation';
 
 import Ripple from 'react-native-material-ripple';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Modal from 'react-native-modal';
 
 import Utils from '../../common/util';
 import BottomAction from './component/BottomAction';
 import AllCard from './allCard/AllCard';
 import MyCard from './myCard/MyCard';
 import ElevatedView from "../component/elevatedView/ElevatedView";
+import Modal from '../component/modal/ModalFarme';
 
 export default class Home extends Component{
     constructor(props) {
@@ -126,8 +126,8 @@ export default class Home extends Component{
     }
 
     measureHeight(event){
-        Utils.size.realVerticalH = event.nativeEvent.layout.height;
         if(!this.state.isInitialized) {
+            Utils.size.realVerticalH = event.nativeEvent.layout.height;
             this.setState({
                 isInitialized:true,
                 bodyHeight: (event.nativeEvent.layout.height - Utils.size.height * 0.075)
@@ -217,9 +217,9 @@ export default class Home extends Component{
                         </View>
                     </Ripple>
                 </ElevatedView>
-                <Modal isVisible={this.state.isAction} animationInTiming={350} animationOutTiming={350} style={styles.actionSheet}
-                        onBackButtonPress={() => this.setState({isAction: false})}
-                        onBackdropPress={() => this.setState({isAction: false})}>
+                <Modal isShow={this.state.isAction} position={'flex-end'}
+                        backPress={() => this.setState({isAction: false})}
+                        bgPress={() => this.setState({isAction: false})}>
                         <BottomAction createNewCard={this.createNewCard} scanQr={this.scanQr} STG={this.STG}/>
                 </Modal>
             </View>

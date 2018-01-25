@@ -9,7 +9,6 @@ import {
 import PropTypes from 'prop-types';
 import {responsiveFontSize} from "../../../responsive/responsive";
 
-import Modal from 'react-native-modal';
 import { Sae } from 'react-native-textinput-effects';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Ripple from 'react-native-material-ripple';
@@ -17,6 +16,7 @@ import { ThemeProvider } from 'react-native-material-ui';
 import Button from 'apsl-react-native-button';
 
 import Utils from '../../../../../common/util';
+import Modal from '../../../../component/modal/ModalFarme';
 
 export default class CardTextControl extends Component{
     constructor(props) {
@@ -280,89 +280,89 @@ export default class CardTextControl extends Component{
                                 </Text>
                             </Button>
                         </View>
-                        <Modal  isVisible={this.state.editProperty === 'tag'} animationInTiming={300} animationOutTiming={300}
-                                animationIn={'fadeIn'}
-                                animationOut={'fadeOut'}
-                                onBackButtonPress={() => this.updateInputProperty("",true)}
-                                onBackdropPress={() => this.updateInputProperty("",true)}>
-                            <Sae
-                                label={this.state.content.tag}
-                                iconClass={FontAwesomeIcon}
-                                iconName={'pencil'}
-                                iconColor={'white'}
-                                labelStyle={[styles.input,{color: 'white'}]}
-                                inputStyle={[styles.input,{color: 'white'}]}
-                                value={this.state.component.tag}
-                                onChangeText={(value) => this.updateInputProperty(value,false)}
-                            />
+                        <Modal  isShow={this.state.editProperty === 'tag'}
+                                backPress={() => this.updateInputProperty("",true)}
+                                bgPress={() => this.updateInputProperty("",true)}>
+                            <View style={{width: Utils.size.width*0.9}}>
+                                <Sae
+                                    label={this.state.content.tag}
+                                    iconClass={FontAwesomeIcon}
+                                    iconName={'pencil'}
+                                    iconColor={'white'}
+                                    labelStyle={[styles.input,{color: 'white'}]}
+                                    inputStyle={[styles.input,{color: 'white'}]}
+                                    value={this.state.component.tag}
+                                    onChangeText={(value) => this.updateInputProperty(value,false)}
+                                />
+                            </View>
                         </Modal>
-                        <Modal  isVisible={this.state.editProperty === 'left'} animationInTiming={300} animationOutTiming={300}
-                                animationIn={'fadeIn'}
-                                animationOut={'fadeOut'}
-                                onBackButtonPress={() => this.updateInputLocation("",true)}
-                                onBackdropPress={() => this.updateInputLocation("",true)}>
-                            <Sae
-                                label={this.state.content.left}
-                                iconClass={FontAwesomeIcon}
-                                iconName={'pencil'}
-                                iconColor={'white'}
-                                labelStyle={[styles.input,{color: 'white'}]}
-                                inputStyle={[styles.input,{color: 'white'}]}
-                                value={this.state.locationText.left}
-                                keyboardType={"numeric"}
-                                onChangeText={(value) => this.updateInputLocation(value,false)}
-                            />
+                        <Modal  isShow={this.state.editProperty === 'left'}
+                                bgPress={() => this.updateInputLocation("",true)}
+                                backPress={() => this.updateInputLocation("",true)}>
+                            <View style={{width: Utils.size.width*0.9}}>
+                                <Sae
+                                    label={this.state.content.left}
+                                    iconClass={FontAwesomeIcon}
+                                    iconName={'pencil'}
+                                    iconColor={'white'}
+                                    labelStyle={[styles.input,{color: 'white'}]}
+                                    inputStyle={[styles.input,{color: 'white'}]}
+                                    value={this.state.locationText.left}
+                                    keyboardType={"numeric"}
+                                    onChangeText={(value) => this.updateInputLocation(value,false)}
+                                />
+                            </View>
                         </Modal>
-                        <Modal  isVisible={this.state.editProperty === 'right'} animationInTiming={300} animationOutTiming={300}
-                                animationIn={'fadeIn'}
-                                animationOut={'fadeOut'}
-                                onBackButtonPress={() => this.updateInputLocation("",true)}
-                                onBackdropPress={() => this.updateInputLocation("",true)}>
-                            <Sae
-                                label={this.state.content.right}
-                                iconClass={FontAwesomeIcon}
-                                iconName={'pencil'}
-                                iconColor={'white'}
-                                labelStyle={[styles.input,{color: 'white'}]}
-                                inputStyle={[styles.input,{color: 'white'}]}
-                                value={this.state.locationText.right}
-                                keyboardType={"numeric"}
-                                onChangeText={(value) => this.updateInputLocation(value,false)}
-                            />
+                        <Modal  isShow={this.state.editProperty === 'right'}
+                                backPress={() => this.updateInputLocation("",true)}
+                                bgPress={() => this.updateInputLocation("",true)}>
+                            <View style={{width: Utils.size.width*0.9}}>
+                                <Sae
+                                    label={this.state.content.right}
+                                    iconClass={FontAwesomeIcon}
+                                    iconName={'pencil'}
+                                    iconColor={'white'}
+                                    labelStyle={[styles.input,{color: 'white'}]}
+                                    inputStyle={[styles.input,{color: 'white'}]}
+                                    value={this.state.locationText.right}
+                                    keyboardType={"numeric"}
+                                    onChangeText={(value) => this.updateInputLocation(value,false)}
+                                />
+                            </View>
                         </Modal>
-                        <Modal  isVisible={this.state.editProperty === 'top'} animationInTiming={300} animationOutTiming={300}
-                                animationIn={'fadeIn'}
-                                animationOut={'fadeOut'}
-                                onBackButtonPress={() => this.updateInputLocation("",true)}
-                                onBackdropPress={() => this.updateInputLocation("",true)}>
-                            <Sae
-                                label={this.state.content.top}
-                                iconClass={FontAwesomeIcon}
-                                iconName={'pencil'}
-                                iconColor={'white'}
-                                labelStyle={[styles.input,{color: 'white'}]}
-                                inputStyle={[styles.input,{color: 'white'}]}
-                                value={this.state.locationText.top}
-                                keyboardType={"numeric"}
-                                onChangeText={(value) => this.updateInputLocation(value,false)}
-                            />
+                        <Modal  isShow={this.state.editProperty === 'top'}
+                                bgPress={() => this.updateInputLocation("",true)}
+                                backPress={() => this.updateInputLocation("",true)}>
+                            <View style={{width: Utils.size.width*0.9}}>
+                                <Sae
+                                    label={this.state.content.top}
+                                    iconClass={FontAwesomeIcon}
+                                    iconName={'pencil'}
+                                    iconColor={'white'}
+                                    labelStyle={[styles.input,{color: 'white'}]}
+                                    inputStyle={[styles.input,{color: 'white'}]}
+                                    value={this.state.locationText.top}
+                                    keyboardType={"numeric"}
+                                    onChangeText={(value) => this.updateInputLocation(value,false)}
+                                />
+                            </View>
                         </Modal>
-                        <Modal  isVisible={this.state.editProperty === 'bottom'} animationInTiming={300} animationOutTiming={300}
-                                animationIn={'fadeIn'}
-                                animationOut={'fadeOut'}
+                        <Modal isShow={this.state.editProperty === 'bottom'}
                                 onBackButtonPress={() => this.updateInputLocation("",true)}
-                                onBackdropPress={() => this.updateInputLocation("",true)}>
-                            <Sae
-                                label={this.state.content.bottom}
-                                iconClass={FontAwesomeIcon}
-                                iconName={'pencil'}
-                                iconColor={'white'}
-                                labelStyle={[styles.input,{color: 'white'}]}
-                                inputStyle={[styles.input,{color: 'white'}]}
-                                value={this.state.locationText.bottom}
-                                keyboardType={"numeric"}
-                                onChangeText={(value) => this.updateInputLocation(value,false)}
-                            />
+                               onBackdropPress={() => this.updateInputLocation("",true)}>
+                            <View style={{width: Utils.size.width*0.9}}>
+                                <Sae
+                                    label={this.state.content.bottom}
+                                    iconClass={FontAwesomeIcon}
+                                    iconName={'pencil'}
+                                    iconColor={'white'}
+                                    labelStyle={[styles.input,{color: 'white'}]}
+                                    inputStyle={[styles.input,{color: 'white'}]}
+                                    value={this.state.locationText.bottom}
+                                    keyboardType={"numeric"}
+                                    onChangeText={(value) => this.updateInputLocation(value,false)}
+                                />
+                            </View>
                         </Modal>
                     </ScrollView>
                 </ThemeProvider>

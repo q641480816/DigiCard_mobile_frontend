@@ -12,13 +12,13 @@ import { responsiveFontSize } from '../component/responsive/responsive';
 import Ripple from "react-native-material-ripple";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import Modal from "react-native-modal";
 
 import { Sae } from 'react-native-textinput-effects';
 
 import ElevatedView from "../component/elevatedView/ElevatedView";
 import Utils from "../../common/util";
 import Toolbar from "../component/toolbar/Toolbar";
+import Modal from "../component/modal/ModalFarme";
 
 export default class ManageGroup extends Component{
     constructor(props) {
@@ -176,7 +176,7 @@ export default class ManageGroup extends Component{
                 </ElevatedView>
             );
         }
-
+        /*
         return(
             <View style={styles.container}>
                 <Toolbar ref={'toolbar'} title={this.state.content.title} loading={true}/>
@@ -234,6 +234,93 @@ export default class ManageGroup extends Component{
                         animationOut={'fadeOut'}
                         onBackButtonPress={() => console.log('')}
                         onBackdropPress={() => console.log("")}
+                        style={{alignItems:'center'}}>
+                    <ElevatedView elevation={2}>
+                        <View style={
+                            {width: Utils.size.width*0.85,backgroundColor:'white',paddingLeft:15,paddingRight:15,paddingTop:10,alignItems:'center'}
+                        }>
+                            <Text style={{fontSize:responsiveFontSize(2.65),fontWeight:'bold',marginBottom:10}}>{this.state.content.editGroupTitle}</Text>
+                            <View style={{width:Utils.size.width*0.85-30}}>
+                                <Sae
+                                    label={this.state.content.editGroupLabel}
+                                    iconClass={FontAwesomeIcon}
+                                    iconName={'pencil'}
+                                    iconColor={Utils.colors.primaryColor}
+                                    labelStyle={[styles.input,{color: Utils.colors.primaryColor}]}
+                                    inputStyle={[styles.input,{color: Utils.colors.primaryColor}]}
+                                    value={this.state.tempGroupName}
+                                    onChangeText={(value) => this.setState({tempGroupName: value})}
+                                />
+                            </View>
+                            <View style={{width:Utils.size.width*0.85-30,borderTopWidth:0.5,borderTopColor:'grey',marginTop:10,flexDirection:'row'}}>
+                                <TouchableWithoutFeedback onPress={()=>this.updateGroupName()}>
+                                    <View style={{width:(Utils.size.width*0.85-30)/2,alignItems: 'center',justifyContent:'center'}}>
+                                        <Text style={styles.actionText}>{this.state.content.confirm}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={()=>this.setState({editProperty:null,tempGroupName: ''})}>
+                                    <View style={{width:(Utils.size.width*0.85-30)/2,alignItems: 'center',justifyContent:'center'}}>
+                                        <Text style={styles.actionText}>{this.state.content.cancel}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </View>
+                        </View>
+                    </ElevatedView>
+                </Modal>
+            </View>
+        );
+        */
+        return(
+            <View style={styles.container}>
+                <Toolbar ref={'toolbar'} title={this.state.content.title} loading={true}/>
+                <ScrollView style={{flex:1,width:Utils.size.width}}>
+                    <Ripple onPress={()=>this.setState({editProperty:'newGroup'})}>
+                        <ElevatedView elevation={1} style={styles.row}>
+                            <View style={{paddingLeft:15,paddingRight:15}}>
+                                <Ionicons name={'ios-add-circle-outline'} size={30} color={'grey'}/>
+                            </View>
+                            <Text style={styles.gName}>{this.state.content.addGroup}</Text>
+                        </ElevatedView>
+                    </Ripple>
+                    {this.groups}
+                </ScrollView>
+                <Modal isShow={this.state.editProperty === 'newGroup'}
+                        backPress={() => console.log('')}
+                        bgPress={() => console.log("")}
+                        style={{alignItems:'center'}}>
+                    <ElevatedView elevation={2}>
+                        <View style={
+                            {width: Utils.size.width*0.85,backgroundColor:'white',paddingLeft:15,paddingRight:15,paddingTop:10,alignItems:'center'}
+                        }>
+                            <Text style={{fontSize:responsiveFontSize(2.65),fontWeight:'bold',marginBottom:10}}>{this.state.content.newGroupTitle}</Text>
+                            <View style={{width:Utils.size.width*0.85-30}}>
+                                <Sae
+                                    label={this.state.content.newGroupLabel}
+                                    iconClass={FontAwesomeIcon}
+                                    iconName={'pencil'}
+                                    iconColor={Utils.colors.primaryColor}
+                                    labelStyle={[styles.input,{color: Utils.colors.primaryColor}]}
+                                    inputStyle={[styles.input,{color: Utils.colors.primaryColor}]}
+                                    value={this.state.newGroupName}
+                                    onChangeText={(value) => this.setState({newGroupName: value})}
+                                />
+                            </View>
+                            <View style={{width:Utils.size.width*0.85-30,borderTopWidth:0.5,borderTopColor:'grey',marginTop:10,flexDirection:'row'}}>
+                                <TouchableWithoutFeedback onPress={()=>this.addNewGroup()}>
+                                    <View style={{width:(Utils.size.width*0.85-30)/2,alignItems: 'center',justifyContent:'center'}}>
+                                        <Text style={styles.actionText}>{this.state.content.confirm}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={()=>this.setState({editProperty:null,newGroupName: ''})}>
+                                    <View style={{width:(Utils.size.width*0.85-30)/2,alignItems: 'center',justifyContent:'center'}}>
+                                        <Text style={styles.actionText}>{this.state.content.cancel}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </View>
+                        </View>
+                    </ElevatedView>
+                </Modal>
+                <Modal  isShow={this.state.editProperty !== null && this.state.editProperty.indexOf('editGroup') >= 0}
                         style={{alignItems:'center'}}>
                     <ElevatedView elevation={2}>
                         <View style={

@@ -9,7 +9,6 @@ import {
 import PropTypes from 'prop-types';
 import {responsiveFontSize} from "../../../responsive/responsive";
 
-import Modal from 'react-native-modal';
 import { Sae } from 'react-native-textinput-effects';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Ripple from 'react-native-material-ripple';
@@ -17,6 +16,7 @@ import { ThemeProvider } from 'react-native-material-ui';
 import Button from 'apsl-react-native-button';
 
 import Utils from '../../../../../common/util';
+import Modal from '../../../../component/modal/ModalFarme';
 
 export default class CardControl extends Component{
     constructor(props) {
@@ -112,21 +112,21 @@ export default class CardControl extends Component{
                                 </Text>
                             </Button>
                         </View>
-                        <Modal isVisible={this.state.editProperty === 'name'} animationInTiming={300} animationOutTiming={300}
-                               animationIn={'fadeIn'}
-                               animationOut={'fadeOut'}
-                               onBackButtonPress={() => this.updateCardProperty("",true)}
-                                onBackdropPress={() => this.updateCardProperty("",true)}>
-                            <Sae
-                                label={this.state.content.name}
-                                iconClass={FontAwesomeIcon}
-                                iconName={'pencil'}
-                                iconColor={'white'}
-                                labelStyle={[styles.input,{color: 'white'}]}
-                                inputStyle={[styles.input,{color: 'white'}]}
-                                value={this.state.cardValue.cardName}
-                                onChangeText={(value) => this.updateCardProperty(value,false)}
-                            />
+                        <Modal isShow={this.state.editProperty === 'name'}
+                               bgPress={() => this.updateCardProperty("",true)}
+                               backPress={() => this.updateCardProperty("",true)}>
+                            <View style={{width: Utils.size.width*0.9}}>
+                                <Sae
+                                    label={this.state.content.name}
+                                    iconClass={FontAwesomeIcon}
+                                    iconName={'pencil'}
+                                    iconColor={'white'}
+                                    labelStyle={[styles.input,{color: 'white'}]}
+                                    inputStyle={[styles.input,{color: 'white'}]}
+                                    value={this.state.cardValue.cardName}
+                                    onChangeText={(value) => this.updateCardProperty(value,false)}
+                                />
+                            </View>
                         </Modal>
                     </ScrollView>
                 </ThemeProvider>

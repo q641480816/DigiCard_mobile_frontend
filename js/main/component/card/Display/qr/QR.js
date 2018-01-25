@@ -13,12 +13,11 @@ import {responsiveFontSize} from "../../../responsive/responsive";
 
 import QRCode from 'react-native-qrcode';
 import Ripple from 'react-native-material-ripple';
-import Modal from 'react-native-modal';
 
+import Modal from '../../../../component/modal/ModalFarme';
 import Utils from '../../../../../common/util';
 import Data from '../../../../../common/Data';
 let RNNFCPush = NativeModules.RNNFCPush;
-let LocationService = NativeModules.LocationService;
 
 export default class QRPanel extends Component{
     constructor(props) {
@@ -199,9 +198,10 @@ export default class QRPanel extends Component{
                         style={styles.name}>{this.state.content.cardName} {this.state.cards[this.state.index].cardName + " (" + (this.state.index + 1) + "/" + this.state.cards.length + ")"}</Text>
                 </View>
                 {body}
-                <Modal isVisible={this.state.isQREnlarged} animationInTiming={5} animationOutTiming={5}
-                       onBackButtonPress={() => this.setState({isQREnlarged: false})}
-                       onBackdropPress={() => this.setState({isQREnlarged: false})}>
+                <Modal isShow={this.state.isQREnlarged} animationInTiming={5} animationOutTiming={5}
+                       bgPress={() => this.setState({isQREnlarged: false})}
+                       backPress={() => this.setState({isQREnlarged: false})}
+                       duration={50}>
                     <View style={styles.modal}>
                         <QRCode
                             value={Utils.base + this.state.cards[this.state.index].cardId}

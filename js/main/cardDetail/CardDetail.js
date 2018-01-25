@@ -13,7 +13,7 @@ import {responsiveFontSize} from "../component/responsive/responsive";
 import Ripple from 'react-native-material-ripple';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Modal from 'react-native-modal';
+
 import { Sae } from 'react-native-textinput-effects';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
@@ -25,6 +25,7 @@ import ToolbarMenu from '../component/toolbarMenu/ToolbarMenu';
 import ElevatedView from "../component/elevatedView/ElevatedView";
 import Card from '../component/card/Display/Card';
 import Toolbar from "../component/toolbar/Toolbar";
+import Modal from '../component/modal/ModalFarme';
 
 export default class CardDetail extends Component{
     constructor(props) {
@@ -258,21 +259,21 @@ export default class CardDetail extends Component{
                                          action: this.deleteCard
                                      }]}
                     />
-                    <Modal isVisible={this.state.editProperty === 'name'} animationInTiming={300} animationOutTiming={300}
-                           animationIn={'fadeIn'}
-                           animationOut={'fadeOut'}
-                           onBackButtonPress={() => this.updateCardName()}
-                           onBackdropPress={() => this.updateCardName()}>
-                        <Sae
-                            label={this.state.content.name}
-                            iconClass={FontAwesomeIcon}
-                            iconName={'pencil'}
-                            iconColor={'white'}
-                            labelStyle={[styles.input,{color: 'white'}]}
-                            inputStyle={[styles.input,{color: 'white'}]}
-                            value={this.state.tempCardName}
-                            onChangeText={(value) => this.setState({tempCardName:value})}
-                        />
+                    <Modal isShow={this.state.editProperty === 'name'}
+                           backPress={() => this.updateCardName()}
+                           bgPress={() => this.updateCardName()}>
+                        <View style={{width: Utils.size.width*0.9}}>
+                            <Sae
+                                label={this.state.content.name}
+                                iconClass={FontAwesomeIcon}
+                                iconName={'pencil'}
+                                iconColor={'white'}
+                                labelStyle={[styles.input,{color: 'white'}]}
+                                inputStyle={[styles.input,{color: 'white'}]}
+                                value={this.state.tempCardName}
+                                onChangeText={(value) => this.setState({tempCardName:value})}
+                            />
+                        </View>
                     </Modal>
                 </View>
             );

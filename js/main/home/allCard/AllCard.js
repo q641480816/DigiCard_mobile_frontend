@@ -7,12 +7,9 @@ import {
 import PropTypes from 'prop-types';
 import {responsiveFontSize} from "../../component/responsive/responsive";
 
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import Modal from 'react-native-modal';
 
 import Utils from '../../../common/util';
-import Ripple from "react-native-material-ripple";
-import ElevatedView from "../../component/elevatedView/ElevatedView";
+import Modal from '../../component/modal/ModalFarme';
 import AllCardContent from './AllCardContent';
 import Card from '../../component/card/Display/Card';
 import Toolbar from "../../component/toolbar/Toolbar";
@@ -75,12 +72,9 @@ export default class AllCard extends Component{
                 <View style={[styles.content,{height:this.state.contentHeight}]}>
                     <AllCardContent ref={'content'} showCardModal={this.showCardModal} navigation={this.props.navigation} setHttp={this.setHttp}/>
                 </View>
-                <Modal isVisible={this.state.isShowCardModal} animationInTiming={300} animationOutTiming={300}
-                       animationIn={'fadeIn'}
-                       animationOut={'fadeOut'}
-                       style={{margin:0}}
-                       onBackButtonPress={() => this.setState({isShowCardModal: false})}
-                       onBackdropPress={() => this.setState({isShowCardModal: false})}>
+                <Modal isShow={this.state.isShowCardModal}
+                       backPress={() => this.setState({isShowCardModal: false})}
+                       bgPress={() => this.setState({isShowCardModal: false})}>
                     <Card width={Utils.size.width} index={0} cardValue={this.state.selectedCard}/>
                 </Modal>
             </View>
